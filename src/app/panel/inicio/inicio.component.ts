@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { FirebaseService } from '../../services/firebase.service';
+import { environment } from '../../../environments/environment';
 
 declare var mapboxgl: any;
 
@@ -101,7 +102,7 @@ export class InicioComponent implements OnInit {
     const latLng = geoRecibo.split(',');
     const lat = Number(latLng[0]);
     const lng = Number(latLng[1]);
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZGVtb2l2cmUiLCJhIjoiY2twZmJpbGJ5MGd6eTJ2bGUzZjJkYzN6NCJ9.n_PkU6cnN536atyddmoz5Q';
+    mapboxgl.accessToken = environment.mapboxAccessToken;
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',

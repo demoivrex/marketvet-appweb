@@ -20,6 +20,7 @@
 // Conexion database produccion
 export const environment = {
   production: false,
+  mapboxAccessToken: 'pk.eyJ1IjoiZGVtb2l2cmUiLCJhIjoiY2twZmJpbGJ5MGd6eTJ2bGUzZjJkYzN6NCJ9.n_PkU6cnN536atyddmoz5Q',
   firebase: {
     apiKey: 'AIzaSyCbvC-B09uUkUUxOSb_R1FgDpQMjjP8wzo',
     authDomain: 'recibosaf-c64ad.firebaseapp.com',
