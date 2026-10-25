@@ -1,0 +1,300 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-0 font-size-18">
+                Panel de Objetivos por Vendedores
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-2 form-group">
+                <label for="mes">Mes</label>
+                <select
+                  class="form-control"
+                  id="mes"
+                  [(ngModel)]="mes"
+                  name="mes"
+                >
+                  <option value="02">ENE FEB MAR</option>
+                  <option value="05">ABR MAY JUN</option>
+                  <option value="08">JUL AGO SEP</option>
+                  <option value="11">OCT NOV DIC</option>
+                </select>
+              </div>
+              <div class="col-md-2 form-group">
+                <label for="ano">Año</label>
+                <select
+                  class="form-control"
+                  id="ano"
+                  [(ngModel)]="ano"
+                  name="ano"
+                >
+                  <option *ngFor="let anio of listaAnios" [value]="anio">{{anio}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <button
+                  class="btn btn-success mb-4"
+                  (click)="cargarObjetivos()"
+                >
+                  CARGAR OBJETIVOS
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+          <div
+            class="col-xl-12"
+            *ngFor="let i = index; let mes1; of: primerMes"
+          >
+            <div
+              class="card"
+              *ngIf="
+                mes1.canal == 'distribuidores' || mes1.canal == 'tradicional'
+              "
+            >
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">{{ mes1.vendedor }}</h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr *ngIf="mes == 02">
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">ENE</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">FEB</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">MAR</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          TOTAL
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">DIF</th>
+                      </tr>
+                      <tr *ngIf="mes == 05">
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">ABR</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">MAY</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">JUN</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          TOTAL
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">DIF</th>
+                      </tr>
+                      <tr *ngIf="mes == 08">
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">JUL</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">AGO</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">SEP</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          TOTAL
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">DIF</th>
+                      </tr>
+                      <tr *ngIf="mes == 11">
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">OCT</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">NOV</th>
+                        <th class="border-top-0 alineado-der">OBJ</th>
+                        <th class="border-top-0 alineado-der borde-izq">DIC</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          TOTAL
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">DIF</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-truncate">$</td>
+                        <td class="text-truncate alineado-der">
+                          {{ mes1.ventasobj | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.ventasp)"
+                        >
+                          <b>{{ mes1.ventas | currency : "ARS" : "symbol" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{
+                            segundoMes[i].ventasobj
+                              | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="
+                            asignarRangoSemaforo(segundoMes[i].ventasp)
+                          "
+                        >
+                          <b>{{
+                            segundoMes[i].ventas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{
+                            tercerMes[i].ventasobj | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(tercerMes[i].ventasp)"
+                        >
+                          <b>{{
+                            tercerMes[i].ventas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            mes1.ventasTotales | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.ventasDif)"
+                        >
+                          <b>{{
+                            mes1.ventasDif | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-truncate">Un</td>
+                        <td class="text-truncate alineado-der">
+                          {{ mes1.cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.cantp)"
+                        >
+                          <b>{{ mes1.cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ segundoMes[i].cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(segundoMes[i].cantp)"
+                        >
+                          <b>{{ segundoMes[i].cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ tercerMes[i].cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(tercerMes[i].cantp)"
+                        >
+                          <b>{{ tercerMes[i].cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{ mes1.cantTotales | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.cantDif)"
+                        >
+                          <b>{{ mes1.cantDif | number : "1.0-0" }} Un</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-truncate">Kg</td>
+                        <td class="text-truncate alineado-der">
+                          {{ mes1.kgobj | number : "1.0-0" }} Kg
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.kgp)"
+                        >
+                          <b>{{ mes1.kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ segundoMes[i].kgobj | number : "1.0-0" }} Kg
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(segundoMes[i].kgp)"
+                        >
+                          <b>{{ segundoMes[i].kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ tercerMes[i].kgobj | number : "1.0-0" }} Kg
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(tercerMes[i].kgp)"
+                        >
+                          <b>{{ tercerMes[i].kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{ mes1.kgTotales | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der borde-izq"
+                          [ngClass]="asignarRangoSemaforo(mes1.kgDif)"
+                        >
+                          <b>{{ mes1.kgDif | number : "1.0-0" }} Kg</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-truncate">ARF $</td>
+                        <td></td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{ mes1.arfv | currency : "ARS" : "symbol" }}</b>
+                        </td>
+                        <td></td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            segundoMes[i].arfv | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td></td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            tercerMes[i].arfv | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

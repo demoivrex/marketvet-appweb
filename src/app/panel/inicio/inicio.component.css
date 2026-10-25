@@ -1,0 +1,30 @@
+.btn-rendir, .btn-quitar {
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 1px;
+}
+
+.btn-aprobar {
+    cursor: pointer;
+}
+
+.btn-rendir:hover {
+    color: #20b799 !important;
+}
+
+.btn-quitar:hover {
+    color: #fa5944 !important;
+}
+
+.alineado-der {
+    text-align: right;
+}
+
+.fila-total {
+    background: #FFFF99;
+}
+
+#map {
+    width: 100%;
+    height: 350px;
+}

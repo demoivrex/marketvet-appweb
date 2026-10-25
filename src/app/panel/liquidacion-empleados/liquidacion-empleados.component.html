@@ -1,0 +1,512 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Liquidación de Sueldos</h4>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row" *ngIf="!verLiquidacionEmpleado">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">Mes a Liquidar</h4>
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Mes</label>
+                    <select class="form-control" id="mes" [(ngModel)]="mes" name="mes">
+                      <option value="01">Enero</option>
+                      <option value="02">Febrero</option>
+                      <option value="03">Marzo</option>
+                      <option value="04">Abril</option>
+                      <option value="05">Mayo</option>
+                      <option value="06">Junio</option>
+                      <option value="07">Julio</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Septiembre</option>
+                      <option value="10">Octubre</option>
+                      <option value="11">Noviembre</option>
+                      <option value="12">Diciembre</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Año</label>
+                    <select class="form-control" id="ano" [(ngModel)]="ano" name="ano">
+                      <option *ngFor="let anio of listaAnios" [value]="anio">{{anio}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-1">
+                    <button class="btn btn-success mb-4" (click)="buscarLiquidacion()">
+                      Cargar Liquidación
+                    </button>
+                  </div>
+                </div>
+                <div class="row" *ngIf="!actualizar && liquidaciones.length > 0">
+                  <div class="col-md-12 mb-2">
+                    <button *ngFor="let sector of listSectores" class="btn btn-warning mb-4 mr-2"
+                      (click)="verSector(sector)">
+                      {{sector}}
+                    </button>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0"
+                    *ngIf="!actualizar && liquidaciones.length > 0">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0">Nombre</th>
+                        <th class="border-top-0">Sector</th>
+                        <th class="border-top-0 alinear-derecha">Sueldo</th>
+                        <th class="border-top-0 alinear-derecha">Aguinaldo</th>
+                        <th class="border-top-0 alinear-derecha">Viáticos</th>
+                        <th class="border-top-0 alinear-derecha">Adelantos</th>
+                        <th class="border-top-0 alinear-derecha">Gastos</th>
+                        <th class="border-top-0 alinear-derecha">Premios</th>
+                        <th class="border-top-0 alinear-derecha">Precio KM</th>
+                        <th class="border-top-0 alinear-derecha">Total KM</th>
+                        <th class="border-top-0 alinear-derecha">Adicional * Cobr</th>
+                        <th class="border-top-0 alinear-derecha">Adicional * KM</th>
+                        <th class="border-top-0 alinear-derecha">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let item; of: liquidacionesTabla" (click)="verLiquidacion(i)">
+                        <td class="text-truncate">{{ i }}</td>
+                        <td class="text-truncate">
+                          <b>{{ item.nombre }}</b>
+                        </td>
+                        <td class="text-truncate">{{ item.sector }}</td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.sueldo | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.aguinaldo | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.viaticos | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.adelantos | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.gastos | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.premios | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.precioKm | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ item.totalkm }} KM
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          (item.precioKm * item.totalkm) * 0.1 | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          item.adicionalPorKM | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            listTotales[i] | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-truncate"></td>
+                        <td class="text-truncate"><b>TOTAL</b></td>
+                        <td class="text-truncate"></td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.sueldo | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.aguinaldo | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.viaticos | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.adelantos | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.gastos | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.premios | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.precioKm | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{ totalesTabla.totalkm }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          (totalesTabla.precioKm * totalesTabla.totalkm) * 0.1 | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          totalesTabla.adicionalPorKM | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            totalesTabla.total + totalesTabla.adicionalPorKM
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div *ngIf="liquidaciones.length > 0">
+                    <button class="btn btn-success mt-4" (click)="actualizar = !actualizar; respaldoLiquidacion()"
+                      *ngIf="!actualizar">
+                      Completar liquidación
+                    </button>
+                  </div>
+                  <div class="form-group mt-4" *ngIf="!actualizar && liquidaciones.length > 0">
+                    <label for="xmlliq">XML Liquidacion</label>
+                    <textarea class="form-control" id="xmlliq" name="xmlliq" [(ngModel)]="xmlliq" rows="3">
+                    </textarea>
+                    <button class="btn btn-warning mt-2" (click)="procesarXML()">
+                      Procesar XML Vendedores
+                    </button>
+                  </div>
+
+                  <table class="table table-centered table-hover table-xl mb-0" *ngIf="actualizar">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0">Nombre</th>
+                        <th class="border-top-0">Sector</th>
+                        <th class="border-top-0">Sueldo</th>
+                        <th class="border-top-0">Aguinaldo</th>
+                        <th class="border-top-0">Viáticos</th>
+                        <th class="border-top-0">Adelantos</th>
+                        <th class="border-top-0">Gastos</th>
+                        <th class="border-top-0">Premios</th>
+                        <th class="border-top-0">Precio KM</th>
+                        <th class="border-top-0">Total KM</th>
+                        <th class="border-top-0">Adicional por KM</th>
+                        <th class="border-top-0">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let item; of: liquidaciones">
+                        <td class="text-truncate">{{ i }}</td>
+                        <td class="text-truncate">{{ item.nombre }}</td>
+                        <td class="text-truncate">{{ item.sector }}</td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="sueldo"
+                            [(ngModel)]="liquidaciones[i].sueldo" name="sueldo" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="aguinaldo"
+                            [(ngModel)]="liquidaciones[i].aguinaldo" name="aguinaldo" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="viaticos"
+                            [(ngModel)]="liquidaciones[i].viaticos" name="viaticos" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="adelantos"
+                            [(ngModel)]="liquidaciones[i].adelantos" name="adelantos" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="gastos"
+                            [(ngModel)]="liquidaciones[i].gastos" name="gastos" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="premios"
+                            [(ngModel)]="liquidaciones[i].premios" name="premios" />
+                        </td>
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="Precio KM"
+                            [(ngModel)]="liquidaciones[i].precioKm" name="precioKm" />
+                        </td>
+
+                        <td class="text-truncate">
+                          <input type="number" class="form-control" placeholder="Total KM"
+                            [(ngModel)]="liquidaciones[i].totalkm" name="totalkm" />
+                        </td>
+
+                        <td class="text-truncate">
+                          {{ calcularAdicionalPorKM(i) }}
+                        </td>
+
+                        <td class="text-truncate">
+                          {{ item.total + calcularAdicionalPorKM(i) }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button class="btn btn-success mt-4" (click)="actualizarLiquidacion()" *ngIf="actualizar">
+                    Actualizar Liquidación
+                  </button>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+
+        <div class="row" *ngIf="verLiquidacionEmpleado">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Empleado: <b>{{ liquidacionVista.nombre }}</b>
+                </h4>
+                <h4 class="card-title overflow-hidden">
+                  Sector: <b>{{ liquidacionVista.sector }}</b>
+                </h4>
+                <h4 class="card-title overflow-hidden">
+                  Mes: <b>{{ mes }} - {{ ano }}</b>
+                </h4>
+                <!-- BLOQUE DE LIQUIDACIÓN -->
+                <hr />
+                <h4 class="card-title overflow-hidden">Detalle liquidación</h4>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0"
+                    *ngIf="!actualizar && liquidaciones.length > 0">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">ITEM</th>
+                        <th class="border-top-0 alinear-derecha">
+                          COEFICIENTE
+                        </th>
+                        <th class="border-top-0 alinear-derecha">MONTO</th>
+                        <th class="border-top-0 alinear-derecha">COMISION</th>
+                        <th class="border-top-0 alinear-derecha">TOTAL</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-truncate"><b>SUELDO</b></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.sueldo
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <div>
+                      </div>
+                      <tr *ngFor="let item; of: liquidacionVista.agregadosBasicos">
+                        <td class="text-truncate"><b>{{item.identificador}}</b></td>
+                        <td class="text-truncate alinear-derecha">{{item.coeficiente*100}}%</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.sueldo * item.coeficiente
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="liquidacionVista.sector === 'LOGISTICA'">
+                        <td class="text-truncate"><b>Adicional por KM</b></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.adicionalPorKM
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="liquidacionVista.aguinaldo > 0">
+                        <td class="text-truncate">AGUINALDO</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.aguinaldo
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="liquidacionVista.viaticos > 0">
+                        <td class="border-top-0">VIATICOS</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.viaticos
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="liquidacionVista.gastos > 0">
+                        <td class="text-truncate">GASTOS</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.gastos
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="liquidacionVista.premios > 0">
+                        <td class="text-truncate">PREMIOS</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            liquidacionVista.premios
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="liquidacionVista.premiosObjetivos">
+                      <tr *ngFor="let premio of liquidacionVista.premiosObjetivos">
+                        <td class="text-truncate">
+                          <b>{{ premio.label }}</b>
+                        </td>
+                        <td class="text-truncate alinear-derecha" [ngClass]="{
+                            'text-danger': premio.coeficiente < 0.85,
+                            'text-warning':
+                              premio.coeficiente < 0.95 &&
+                              premio.coeficiente > 0.85,
+                            'text-success': premio.coeficiente > 0.85
+                          }">
+                          <b>{{ premio.coeficiente | percent : "1.2" }}</b>
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{
+                          premio.montoImponible | currency : "ARS" : "symbol"
+                          }}
+                        </td>
+                        <td class="text-truncate alinear-derecha" [ngClass]="{
+                            'text-danger': premio.coeficiente < 0.85,
+                            'text-warning':
+                              premio.coeficiente < 0.95 &&
+                              premio.coeficiente > 0.85,
+                            'text-success': premio.coeficiente > 0.85
+                          }">
+                          <b>{{ premio.comision | percent : "1.2" }}</b>
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            premio.total | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <td class="text-truncate"><b>TOTAL</b></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-truncate alinear-derecha">
+                          <b>{{
+                            totalDetalle | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- BLOQUE DE EFECTIVO -->
+                <hr />
+                <h4 class="card-title overflow-hidden">
+                  Detalle de Efectivo a entregar
+                </h4>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0"
+                    *ngIf="!actualizar && liquidaciones.length > 0">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">ITEM</th>
+                        <th class="border-top-0 alinear-derecha">TOTAL</th>
+                        <th class="border-top-0 alinear-derecha">SUELDO</th>
+                        <th class="border-top-0 alinear-derecha">AGUINALDO</th>
+                        <th class="border-top-0 alinear-derecha">ADELANTOS</th>
+                        <th class="border-top-0 alinear-derecha">
+                          <b>EFECTIVO</b>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-truncate">EFECTIVO</td>
+                        <td class="text-truncate alinear-derecha">
+                          {{totalDetalle | currency : "ARS" : "symbol"}}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{liquidacionVista.sueldo | currency : "ARS" : "symbol"}}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{liquidacionVista.aguinaldo | currency : "ARS" : "symbol"}}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{liquidacionVista.adelantos | currency : "ARS" : "symbol"}}
+                        </td>
+                        <td class="text-truncate alinear-derecha">
+                          {{totalDetalle -
+                          liquidacionVista.sueldo -
+                          liquidacionVista.aguinaldo -
+                          liquidacionVista.adelantos
+                          | currency : "ARS" : "symbol"}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <hr />
+                <button class="btn btn-success mt-4" (click)="verLiquidacionEmpleado = !verLiquidacionEmpleado">
+                  Volver
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

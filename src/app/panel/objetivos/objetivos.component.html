@@ -1,0 +1,595 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Objetivos</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-10 form-group">
+                    <h4 class="card-title overflow-hidden">Tabla de Objetivos</h4>
+                  </div>
+                  <div class="col-md-2 form-group text-right">
+                    <button *ngIf="accesoEdicion" class="btn btn-primary" data-toggle="modal" data-target="#modalObjetivosTrimestrales" (click)="abrirModal()">Cargar Objetivos Trimestrales</button>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Mes</label>
+                    <select class="form-control" id="mes" [(ngModel)]="mes" name="mes">
+                      <option value="01">Enero</option>
+                      <option value="02">Febrero</option>
+                      <option value="03">Marzo</option>
+                      <option value="04">Abril</option>
+                      <option value="05">Mayo</option>
+                      <option value="06">Junio</option>
+                      <option value="07">Julio</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Septiembre</option>
+                      <option value="10">Octubre</option>
+                      <option value="11">Noviembre</option>
+                      <option value="12">Diciembre</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Año</label>
+                    <select class="form-control" id="ano" [(ngModel)]="ano" name="ano">
+                      <option *ngFor="let anio of listaAnios" [value]="anio">{{anio}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-4">
+                    <button class="btn btn-success mb-4" (click)="buscarDatosObjetivos()">
+                      Cargar Objetivos
+                    </button>
+                  </div>
+                </div>
+                <h4 class="card-title overflow-hidden">
+                  Cargar XML de Objetivos
+                </h4>
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Día</label>
+                    <input
+                      class="form-control"
+                      id="dia"
+                      [(ngModel)]="dd"
+                      name="dd"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="xmlliq">XML Objetivos Vendedores</label>
+                      <textarea
+                        class="form-control"
+                        id="xmlobj"
+                        name="xmlobj"
+                        [(ngModel)]="xmlobj"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <button
+                      class="btn btn-success mr-2"
+                      type="button"
+                      (click)="procesarXMLnuevo()"
+                    >
+                      Procesar Objetivos
+                    </button>
+                  </div>
+                </div>
+                <div class="table-responsive" *ngIf="objetivos != undefined">
+                  <h4 class="card-title overflow-hidden mt-4">
+                    CANAL TRADICIONAL
+                  </h4>
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          <b>COEF</b>
+                        </th>
+                        <th class="border-top-0 alineado-der">Ventas</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Cantidad</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          ARF $
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objTradicional">
+                        <td class="text-truncate borde-izq">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.coeficiente)"
+                        >
+                          <b>{{ objetivo.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.ventasp)"
+                        >
+                          <b>{{ objetivo.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.ventasobj | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.cantp)"
+                        >
+                          <b>{{ objetivo.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.kgp)"
+                        >
+                          <b>{{ objetivo.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.kgobj | number : "1.0-0" }} Kg
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.arfv | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h4 class="card-title overflow-hidden mt-4">
+                    CANAL DISTRIBUIDORES
+                  </h4>
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          <b>COEF</b>
+                        </th>
+                        <th class="border-top-0 alineado-der">Ventas</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Cantidad</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          ARF $
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objDistribuidores">
+                        <td class="text-truncate borde-izq">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.coeficiente)"
+                        >
+                          <b>{{ objetivo.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.ventasp)"
+                        >
+                          <b>{{ objetivo.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.ventasobj | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.cantp)"
+                        >
+                          <b>{{ objetivo.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.kgp)"
+                        >
+                          <b>{{ objetivo.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.kgobj | number : "1.0-0" }} Kg
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.arfv | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h4 class="card-title overflow-hidden mt-4">
+                    CANAL DIGITAL
+                  </h4>
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          <b>COEF</b>
+                        </th>
+                        <th class="border-top-0 alineado-der">Ventas</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Cantidad</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">%</th>
+                        <th class="border-top-0 alineado-der borde-izq">Obj</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objDigitales">
+                        <td class="text-truncate borde-izq">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.coeficiente)"
+                        >
+                          <b>{{ objetivo.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.ventasp)"
+                        >
+                          <b>{{ objetivo.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.ventasobj | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.cant | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.cantp)"
+                        >
+                          <b>{{ objetivo.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.cantobj | number : "1.0-0" }} Un
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.kg | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(objetivo.kgp)"
+                        >
+                          <b>{{ objetivo.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          {{ objetivo.kgobj | number : "1.0-0" }} Kg
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card" *ngIf="objetivos != undefined && objetivosEsp != undefined">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">Tabla de Objetivos</h4>
+                <div class="row">
+                  <!-- OBJETIVOS ESPECIALES PREPARADO Y LOGISTICA -->
+                  <div class="table-responsive">
+                    <table
+                      class="table table-centered table-hover table-xl mb-0"
+                      id="recent-orders"
+                    >
+                      <thead>
+                        <tr>
+                          <th class="border-top-0">Objetivos Especiales</th>
+                          <th class="border-top-0 alineado-der">
+                            Cobraza Total
+                          </th>
+                          <th class="border-top-0 alineado-der">
+                            Coeficientes
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="text-truncate">
+                            OBJETIVOS VENTAS CANAL TRADICIONAL
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            {{
+                              objetivosEsp[0].ventastotales
+                                | currency : "ARS" : "symbol"
+                            }}
+                          </td>
+                          <td
+                            class="text-truncate alineado-der"
+                            [ngClass]="asignarRangoSemaforo(objetivosEsp[0].coeficiente)">
+                            <b>{{
+                              objetivosEsp[0].coeficiente | percent : "1.0"
+                            }}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-truncate">
+                            OBJETIVOS VENTAS CANAL DISTRIBUIDORES
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            {{
+                              objetivosEsp[1].ventastotales
+                                | currency : "ARS" : "symbol"
+                            }}
+                          </td>
+                          <td
+                            class="text-truncate alineado-der"
+                            [ngClass]="asignarRangoSemaforo(objetivosEsp[1].coeficiente)">
+                            <b>{{
+                              objetivosEsp[1].coeficiente | percent : "1.0"
+                            }}</b>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalObjetivosTrimestrales" tabindex="-1" role="dialog" aria-labelledby="modalObjetivosTrimestrales" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cargar Objetivos Trimestrales</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="tabVendedor" role="tabpanel">
+            <div class="container">
+              <div class="row justify-content-md-center">
+                <div class="col-md-4 form-group">
+                  <select class="form-control" id="mes1" name="mes1" [(ngModel)]="mesModal" (change)="seleccionTrimestre()">
+                    <option value="02">Q1 - EFM</option>
+                    <option value="05">Q2 - AMJ</option>
+                    <option value="08">Q3 - JAS</option>
+                    <option value="11">Q4 - OND</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row justify-content-md-center">
+                <div class="col-md-4 form-group">
+                  <select class="form-control" id="vendedor" [(ngModel)]="vendedorModal" name="vendedor" (change)="seleccionVendedor()">
+                    <option value="" disabled selected>Seleccione un vendedor</option>
+                    <option *ngFor="let objetivo of vendedoresSelect" [value]="objetivo.vendedor">
+                      {{objetivo.vendedor}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="container">
+          <div class="row">
+            <div class="table-responsive">
+              <table
+                class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                <thead>
+                  <tr>
+                    <th class="border-top-0"></th>
+                    <th class="border-top-0"><b>UNID</b></th>
+                    <th class="border-top-0"><b>KILOS</b></th>
+                    <th class="border-top-0"><b>IMPORTE</b></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="container">
+                        <div class="row justify-content-md-center">
+                          <span>{{mesesTrimestre[0]}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Un.</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (cantModal * 0.95).toFixed(2) : cantModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Kg.</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (kgModal * 0.95).toFixed(2) : kgModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (ventasModal * 0.95).toFixed(2) : ventasModal">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="container">
+                        <div class="row justify-content-md-center">
+                          <span>{{mesesTrimestre[1]}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-info">Un.</span>
+                        </div>
+                        <input type="number" class="form-control" [(ngModel)]="cantModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-info">Kg.</span>
+                        </div>
+                        <input type="number" class="form-control" [(ngModel)]="kgModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-info">$</span>
+                        </div>
+                        <input type="number" class="form-control" [(ngModel)]="ventasModal">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="container">
+                        <div class="row justify-content-md-center">
+                          <span>{{mesesTrimestre[2]}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Un.</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (cantModal * 1.05).toFixed(2) : cantModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Kg.</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (kgModal * 1.05).toFixed(2) : kgModal">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control" [readOnly]="true" [value]="(tabActiva == 0) ? (ventasModal * 1.05).toFixed(2) : ventasModal">
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="container">
+          <div class="row justify-content-around">
+            <button type="button" class="btn btn-danger col-md-5 mb-3" (click)="cancelarCargaObjetivosTrimestrales()" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-success col-md-5 mb-3" (click)="guardarObjetivo()" [disabled]="(tabActiva == 0 && vendedorModal === undefined)">Agregar Objetivo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

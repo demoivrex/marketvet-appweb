@@ -1,0 +1,216 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Ventas Digitales</h4>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Tabla de ventas Digitales
+                </h4>
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Mes</label>
+                    <select class="form-control" id="mes" [(ngModel)]="mes" name="mes">
+                      <option value="01">Enero</option>
+                      <option value="02">Febrero</option>
+                      <option value="03">Marzo</option>
+                      <option value="04">Abril</option>
+                      <option value="05">Mayo</option>
+                      <option value="06">Junio</option>
+                      <option value="07">Julio</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Septiembre</option>
+                      <option value="10">Octubre</option>
+                      <option value="11">Noviembre</option>
+                      <option value="12">Diciembre</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Año</label>
+                    <select class="form-control" id="ano" [(ngModel)]="ano" name="ano">
+                      <option value="2022">2022</option>
+                      <option value="2023">2023</option>
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-4">
+                    <button class="btn btn-success mb-4" (click)="buscarDatosObjetivos()">
+                      Cargar Ventas
+                    </button>
+                  </div>
+                </div>
+                <div class="table-responsive mb-4">
+                  <table class="table table-centered table-hover table-xl mb-0" id="recent-orders" *ngIf="objDigitales">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der">
+                          <b>DIGITAL</b>
+                        </th>
+                        <th class="border-top-0 alineado-der">VENDEDORES</th>
+                        <th class="border-top-0 alineado-der">TOTAL</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objDigitales">
+                        <td class="text-truncate">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventas | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventasDigital - objetivo.ventas
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.ventasDigital | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-truncate">CANAL DIGITAL</td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            ventasTotalesDigital | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            ventasTotalesVendedores
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            ventasTotalesCanal | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0" id="recent-orders" *ngIf="objDigitales">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Netto
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Jacob
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Bearzotti
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Peralta
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Attie
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Silvestri
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Garcia
+                        </th>
+                        <th class="border-top-0 alineado-der borde-izq">
+                          Correa
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objDigitales">
+                        <td class="text-truncate borde-izq">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].netto
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].jacob
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].bearzotti
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].peralta
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].attie
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].silvestri
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].garcia
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der borde-izq">
+                          <b>{{
+                            objetivo.ventasVendedores[0].correa
+                            | currency : "ARS" : "symbol"
+                            }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

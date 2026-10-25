@@ -1,0 +1,197 @@
+<div id="layout-wrapper">
+    <div class="main-content">
+        <app-navbar></app-navbar>
+        <app-toolbar></app-toolbar>
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Panel de Administración de Recibos</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <i class="bx bx-dollar-circle float-right m-0 h2 text-muted"></i>
+                                <h6 class="text-muted text-uppercase mt-0">Total por rendir</h6>
+                                <h3 class="mb-3" data-plugin="counterup">{{ rendirTotal | currency:"ARS":"symbol" }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <i class="bx bx-dollar-circle float-right m-0 h2 text-muted"></i>
+                                <h6 class="text-muted text-uppercase mt-0">Efectivo</h6>
+                                <h3 class="mb-3"><span data-plugin="counterup">{{ rendirEfectivo |
+                                        currency:"ARS":"symbol" }}</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <i class="bx bx-dollar-circle float-right m-0 h2 text-muted"></i>
+                                <h6 class="text-muted text-uppercase mt-0">Cheques</h6>
+                                <h3 class="mb-3"><span data-plugin="counterup">{{ rendirCheques |
+                                        currency:"ARS":"symbol" }}</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <i class="bx bx-dollar-circle float-right m-0 h2 text-muted"></i>
+                                <h6 class="text-muted text-uppercase mt-0">Depositos</h6>
+                                <h3 class="mb-3" data-plugin="counterup">{{ rendirDepositos | currency:"ARS":"symbol" }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="recibos">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Ultimos Recibos</h4>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button class="btn btn-sm btn-warning mr-3" (click)="noFiltrar()">TODOS</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('FN')">NETTO</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('GJ')">JACOB</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('BB')">BEARZOTTI</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('JP')">PERALTA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AA')">ATTIE</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('MS')">SILVESTRI</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AG')">GARCIA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('LC')">CORREA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AF')">FUGAS</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('WE')">EGEA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('WS')">SPECTOR</button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">#</th>
+                                                <th class="border-top-0">Aprobar</th>
+                                                <th class="border-top-0">Fecha</th>
+                                                <th class="border-top-0">Estado</th>
+                                                <th class="border-top-0">Vendedor</th>
+                                                <th class="border-top-0">Cliente</th>
+                                                <th class="border-top-0">Esquema</th>
+                                                <th class="border-top-0 alineado-der">Efectivo</th>
+                                                <th class="border-top-0 alineado-der">Cheques</th>
+                                                <th class="border-top-0 alineado-der">Depositos</th>
+                                                <th class="border-top-0 alineado-der">Total</th>
+                                                <th class="border-top-0 alineado-der">Herramientas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let i = index; let recibo of recibos">
+                                                <td>{{ i }}</td>
+                                                <td class="text-truncate">
+                                                    <i *ngIf="(esAdministrador() || esAprobadorRecibos()) && !recibo.rendido"
+                                                        (click)="rendir(recibo)"
+                                                        class="bx bx bx-check float-right m-0 h2 text-muted btn-rendir"></i>
+                                                    <i *ngIf="esAdministrador()" (click)="eliminarRecibo(recibo,i)"
+                                                        class="bx bx-x float-right m-0 h2 text-muted btn-quitar"></i>
+                                                </td>
+                                                <td class="text-truncate">{{ recibo.fecha | date: "dd/MM/yy h:mm a" }}
+                                                </td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="recibo.rendido" class="badge badge-success"> RENDIDO
+                                                    </span>
+                                                    <span *ngIf="!recibo.rendido" class="badge badge-danger"> POR RENDIR
+                                                    </span>
+                                                </td>
+                                                <td class="text-truncate">{{ recibo.vendedor }}</td>
+                                                <td class="text-truncate">{{ recibo.cliente.razonSocial }}</td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="recibo.colorRecibo" class="badge badge-dark"> ESQUEMA
+                                                        II </span>
+                                                    <span *ngIf="!recibo.colorRecibo" class="badge badge-light"> ESQUEMA
+                                                        I </span>
+                                                </td>
+                                                <ng-template #sinColor>
+                                                    <td></td>
+                                                </ng-template>
+                                                <td class="text-truncate alineado-der">{{ recibo.efectivo |
+                                                    currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ recibo.cheque |
+                                                    currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ recibo.deposito |
+                                                    currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ recibo.total |
+                                                    currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">
+                                                    <span *ngIf="recibo.geolocalizacion" class="badge badge-success"
+                                                        (click)="geolocalizarRecibo(recibo.geolocalizacion)"> VER MAPA
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="fila-total">
+                                                <td class="text-truncate"></td>
+                                                <td class="text-truncate"></td>
+                                                <td class="text-truncate"></td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="esAdministrador() || esAprobadorRecibos()"
+                                                        (click)="aprobarListaRecibos(recibos)"
+                                                        class="badge badge-success btn-aprobar"> APROBAR TODOS </span>
+                                                </td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="esAdministrador()" (click)="eliminarRecibos()"
+                                                        class="badge badge-danger btn-aprobar"> ELIMINAR RECIBOS </span>
+                                                </td>
+                                                <td class="text-truncate"></td>
+                                                <td class="text-truncate"><strong>TOTALES</strong></td>
+                                                <td class="text-truncate alineado-der"><strong>{{ parcialEfectivo |
+                                                        currency:"ARS":"symbol" }}</strong></td>
+                                                <td class="text-truncate alineado-der"><strong>{{ parcialCheques |
+                                                        currency:"ARS":"symbol" }}</strong></td>
+                                                <td class="text-truncate alineado-der"><strong>{{ parcialDepositos |
+                                                        currency:"ARS":"symbol" }}</strong></td>
+                                                <td class="text-truncate alineado-der"><strong>{{ parcialTotal |
+                                                        currency:"ARS":"symbol" }}</strong></td>
+                                                <td class="text-truncate alineado-der"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Geolocalizacion del recibo</h4>
+                                <div id='map'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- container-fluid -->
+        </div>
+        <app-footer></app-footer>
+    </div>
+</div>

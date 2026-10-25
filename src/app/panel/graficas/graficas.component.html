@@ -1,0 +1,250 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-0 font-size-18">Gráficas Real vs Objetivos</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-2 form-group">
+            <label for="mesGraficas">Mes</label>
+            <select
+              class="form-control"
+              id="mesGraficas"
+              [(ngModel)]="mesGraficas"
+              name="mesGraficas"
+            >
+              <option value="01">Enero</option>
+              <option value="02">Febrero</option>
+              <option value="03">Marzo</option>
+              <option value="04">Abril</option>
+              <option value="05">Mayo</option>
+              <option value="06">Junio</option>
+              <option value="07">Julio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+          <div class="col-md-2 form-group">
+            <label for="anoGraficas">Año</label>
+            <select
+              class="form-control"
+              id="anoGraficas"
+              [(ngModel)]="anoGraficas"
+              name="anoGraficas"
+            >
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2 mb-4">
+            <button
+              class="btn btn-success mb-4"
+              (click)="cargarDatosGraficos()"
+            >
+              Cargar Graficas
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row mt-4">
+                  <div class="col-xl-6">
+                    <h2>Ventas Canal Tradicional</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="ventasradGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                  <div class="col-xl-6">
+                    <h2>Ventas Canal Distribuidores</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="ventasDistGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-xl-6">
+                    <h2>Cantidad Canal Tradicional</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="cantTradGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                  <div class="col-xl-6">
+                    <h2>Cantidad Canal Distribuidores</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="cantDistGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-xl-6">
+                    <h2>KG Canal Tradicional</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="kgTradGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                  <div class="col-xl-6">
+                    <h2>KG Canal Distribuidores</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="kgDistGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-xl-6">
+                    <h2>ARFV Canal Tradicional</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="arfvTradGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                  <div class="col-xl-6">
+                    <h2>ARFV Canal Distribuidores</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="arfvDistGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-xl-6">
+                    <h2>ARFC Canal Tradicional</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="arfcTradGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                  <div class="col-xl-6">
+                    <h2>ARFC Canal Distribuidores</h2>
+                    <canvas
+                      baseChart
+                      width="400"
+                      height="400"
+                      [datasets]="arfcDistGraf"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      [plugins]="lineChartPlugins"
+                    >
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

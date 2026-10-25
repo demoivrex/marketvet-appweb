@@ -1,0 +1,192 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de asignacion de objetivos</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-10 form-group">
+                    <h4 class="card-title overflow-hidden">Tabla de objetivos</h4>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Trimestre</label>
+                    <select class="form-control" 
+                        id="trimestre" 
+                        [(ngModel)]=trimestre
+                        name="trimestre">
+                      <option value=1>ENE FEB MAR</option>
+                      <option value=2>ABR MAY JUN</option>
+                      <option value=3>JUL AGO SEP</option>
+                      <option value=4>OCT NOV DIC</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-4">
+                    <button 
+                        class="btn btn-success mb-4"
+                        type="button" 
+                        (click)="buscarDatosObjetivos(trimestre)">
+                      Cargar Objetivos
+                    </button>
+                  </div>
+                </div>
+                <h4 class="card-title overflow-hidden">
+                  Cargar XML de Objetivos
+                </h4>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="xmlliq">XML Objetivos Vendedores</label>
+                            <textarea
+                                class="form-control"
+                                id="xmlobj"
+                                name="xmlobj"
+                                [(ngModel)]="xmlobj"
+                                rows="3"
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ano">Coef Ventas</label>
+                            <input
+                                class="form-control"
+                                id="coefObjVentas"
+                                [(ngModel)]=coefObjVentas
+                                name="coefObjVentas"/>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ano">Coef Unidades</label>
+                            <input
+                                class="form-control"
+                                id="coefObjUnidades"
+                                [(ngModel)]=coefObjUnidades
+                                name="coefObjUnidades"/>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ano">Coef Kilos</label>
+                            <input
+                                class="form-control"
+                                id="coefObjKilos"
+                                [(ngModel)]=coefObjKilos
+                                name="coefObjKilos"/>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button
+                        class="btn btn-success mr-2"
+                        type="button"
+                        (click)="procesarXML()">
+                        Procesar Objetivos
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive" *ngIf="objetivos != undefined">
+                  <h4 class="card-title overflow-hidden mt-4">
+                    VENDEDORES
+                  </h4>
+                  <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>VENDEDOR</b></th>
+                        <th class="border-top-0 alineado-der">Ventas 1</th>
+                        <th class="border-top-0 alineado-der">Ventas 2</th>
+                        <th class="border-top-0 alineado-der">Ventas 3</th>
+                        <th class="border-top-0 alineado-der">Cantidad 1</th>
+                        <th class="border-top-0 alineado-der">Cantidad 2</th>
+                        <th class="border-top-0 alineado-der">Cantidad 3</th>
+                        <th class="border-top-0 alineado-der">Kg 1</th>
+                        <th class="border-top-0 alineado-der">Kg 2</th>
+                        <th class="border-top-0 alineado-der">Kg 3</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let objetivo of objetivos">
+                        <td class="text-truncate borde-izq">
+                          {{ objetivo.vendedor }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.objVentas * 0.95 | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.objVentas | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{
+                            objetivo.objVentas * 1.05 | currency : "ARS" : "symbol"
+                          }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objUnidades * 0.95 | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objUnidades | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objUnidades * 1.05 | number : "1.0-0" }} Un</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objKilos * 0.95 | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objKilos | number : "1.0-0" }} Kg</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ objetivo.objKilos * 1.05 | number : "1.0-0" }} Kg</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalObjetivosTrimestrales" tabindex="-1" role="dialog" aria-labelledby="modalObjetivosTrimestrales" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cargar Objetivos Trimestrales</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

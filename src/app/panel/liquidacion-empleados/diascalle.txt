@@ -1,0 +1,59 @@
+  diasCalleJULIO2026 =
+    [
+      {
+        "vendedor": "ATTIE OROME AGUSTIN",
+        "dias": 40
+      },
+      {
+        "vendedor": "BEARZOTTI BRUNO",
+        "dias": 65
+      },
+      {
+        "vendedor": "BREARD MICAELA",
+        "dias": 40
+      },
+      {
+        "vendedor": "CORREA JOSE LAUTARO",
+        "dias": 65
+      },
+      {
+        "vendedor": "EGEA WALTER",
+        "dias": 65
+      },
+      {
+        "vendedor": "FUGAS ALFREDO RAUL",
+        "dias": 65
+      },
+      {
+        "vendedor": "GARCIA ARIEL",
+        "dias": 50
+      },
+      {
+        "vendedor": "JACOB GERMAN",
+        "dias": 40
+      },
+      {
+        "vendedor": "MAGNIN CYNTHIA",
+        "dias": 65
+      },
+      {
+        "vendedor": "MARKETVET SA",
+        "dias": 8
+      },
+      {
+        "vendedor": "NETTO FABIAN",
+        "dias": 65
+      },
+      {
+        "vendedor": "PERALTA JAVIER",
+        "dias": 10
+      },
+      {
+        "vendedor": "SILVESTRI MAXIMILIANO",
+        "dias": 65
+      },
+      {
+        "vendedor": "SPECTOR WALTER",
+        "dias": 50
+      }
+    ]

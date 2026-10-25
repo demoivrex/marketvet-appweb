@@ -1,0 +1,21 @@
+export class ObjetivosModel {
+    arfc:number;
+    arfcobj:number;
+    arfcp:number;
+    arfv:number;
+    arfvobj:number;
+    arfvp:number;
+    canal:string;
+    cant:number;
+    cantobj:number;
+    cantp:number;
+    coeficiente:number;
+    kg:number;
+    kgobj:number;
+    kgp:number;
+    premioCoef:number;
+    vendedor:string;
+    ventas:number;
+    ventasobj:number;
+    ventasp:number;
+}

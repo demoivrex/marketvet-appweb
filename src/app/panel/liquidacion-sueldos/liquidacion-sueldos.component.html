@@ -1,0 +1,932 @@
+<div id="layout-wrapper">
+    <div class="main-content">
+        <app-navbar></app-navbar>
+        <app-toolbar></app-toolbar>
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Panel de Liquidaciones de Comisiones y Sueldos</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row" *ngIf="!visualizar">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Items Liquidación</h4>
+                                <div class="row">
+                                    <div class="col-md-2 form-group">
+                                        <label for="mes">Mes</label>
+                                        <select class="form-control" 
+                                            id="mes"
+                                            [(ngModel)]="mes"
+                                            name="mes">
+                                            <option value="01">Enero</option>
+                                            <option value="02">Febrero</option>
+                                            <option value="03">Marzo</option>
+                                            <option value="04">Abril</option>
+                                            <option value="05">Mayo</option>
+                                            <option value="06">Junio</option>
+                                            <option value="07">Julio</option>
+                                            <option value="08">Agosto</option>
+                                            <option value="09">Septiembre</option>
+                                            <option value="10">Octubre</option>
+                                            <option value="11">Noviembre</option>
+                                            <option value="12">Diciembre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <label for="ano">Año</label>
+                                        <select class="form-control" 
+                                            id="ano"
+                                            [(ngModel)]="ano"
+                                            name="ano">
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <button class="btn btn-success mt-4 mr-3" 
+                                            *ngIf="!editar" 
+                                            (click)="buscarDatosLiquidacion()">
+                                            CARGAR LIQUIDACION
+                                        </button>    
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover table-xl mb-0" id="recent-orders" *ngIf="items">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">Vendedor</th>
+                                                <th class="border-top-0 alineado-der">Sueldo</th>
+                                                <th class="border-top-0 alineado-der">Aguinaldo</th>
+                                                <th class="border-top-0 alineado-der">Premios</th>
+                                                <th class="border-top-0 alineado-der">Viaticos</th>
+                                                <th class="border-top-0 alineado-der">Adelantos</th>
+                                                <th class="border-top-0 alineado-der">Gastos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="!editar">
+                                            <tr *ngFor="let item of items">
+                                                <td class="text-truncate">
+                                                    {{item.vendedor}}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.sueldo | currency:"ARS":"symbol" }}
+                                                </td>                                                
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.aguinaldo | currency:"ARS":"symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.premios | currency:"ARS":"symbol" }} 
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.viaticos | currency:"ARS":"symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.adelanto |  currency:"ARS":"symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{item.gastos |  currency:"ARS":"symbol" }}
+                                                </td>
+                                            </tr>                                            
+                                        </tbody>
+                                        
+                                        <tbody *ngIf="editar">
+                                            <tr *ngFor="let item of items">
+                                                <td class="text-truncate">
+                                                    {{item.vendedor}}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.sueldo">
+                                                </td>
+ 
+                                                <td class="text-truncate alineado-der">
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.aguinaldo">
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.premios">
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.viaticos">
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.adelanto">
+                                                </td>
+                                                <td>
+                                                    <input type="number" 
+                                                        class="input-tabla"
+                                                        [(ngModel)]="item.gastos">
+                                                </td>
+                                            </tr>
+                                        </tbody>         
+                                    </table>
+                                    <button class="btn btn-success mt-4 mr-3" *ngIf="!editar" (click)="editarLiquidacion()">EDITAR LIQUIDACION</button>
+                                    <button class="btn btn-primary mt-4" *ngIf="editar" (click)="guardarLiquidacion()">GUARDAR LIQUIDACION</button>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+
+                <div class="row" *ngIf="!visualizar">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Datos Liquidacion PalJet</h4>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                            <thead>
+                                                <tr>
+                                                    <th class="border-top-0">Vendedor</th>
+                                                    <th class="border-top-0 alineado-der">Efectivo Antes</th>
+                                                    <th class="border-top-0 alineado-der">Efectivo Despues</th>
+                                                    <th class="border-top-0 alineado-der">Cheques Antes</th>
+                                                    <th class="border-top-0 alineado-der">Cheques Despues</th>
+                                                    <th class="border-top-0 alineado-der">Depositos Antes</th>
+                                                    <th class="border-top-0 alineado-der">Depositos Despues</th>
+                                                    <th class="border-top-0 alineado-der">Comisiones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngIf="cprGambuzza">
+                                                    <td class="text-truncate">GAMBUZZA MATIAS ELIAN</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprGambuzza.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprCasafus">
+                                                    <td class="text-truncate">CASAFUS SANTIAGO ANTONIO</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprCasafus.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprChiardola">
+                                                    <td class="text-truncate">CHIARDOLA IVAN</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprChiardola.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+    
+                                                <tr *ngIf="cprEstrada">
+                                                    <td class="text-truncate">ESTRADA MARCELO</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprEstrada.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprFugas">
+                                                    <td class="text-truncate">FUGAS ALFREDO RAUL</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprFugas.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprJacob">
+                                                    <td class="text-truncate">JACOB GERMAN</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprJacob.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprReynoso">
+                                                    <td class="text-truncate">REYNOSO DIEGO ALEJANDRO</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprReynoso.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprMilocco">
+                                                    <td class="text-truncate">MILOCCO MARIANO</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprMilocco.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprNetto">
+                                                    <td class="text-truncate">NETTO FABIAN</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprNetto.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprSpector">
+                                                    <td class="text-truncate">SPECTOR WALTER</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprSpector.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                                <tr *ngIf="cprVila">
+                                                    <td class="text-truncate">VILA SUAREZ EMMANUEL</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.chequeA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.chequeB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.depositoA | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.depositoB | currency:"ARS":"symbol" }}</td>
+                                                    <td class="text-truncate alineado-der">{{ cprVila.total | currency:"ARS":"symbol" }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+
+                <div class="row" *ngIf="!visualizar">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Obtener Comisiones Individuales</h4>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">Vendedor</th>
+                                                <th class="border-top-0 alineado-der">Sueldo</th>
+                                                <th class="border-top-0 alineado-der">Aguinaldo</th>
+                                                <th class="border-top-0 alineado-der">Objetivos Kg</th>
+                                                <th class="border-top-0 alineado-der">Objetivos Unidades</th>
+                                                <th class="border-top-0 alineado-der">Objetivos $</th>
+                                                <th class="border-top-0 alineado-der">Objetivos ARF $</th>
+                                                <th class="border-top-0 alineado-der">Objetivos ARF Un</th>
+                                                <th class="border-top-0 alineado-der">Premios</th>
+                                                <th class="border-top-0 alineado-der">Viaticos</th>
+                                                <th class="border-top-0 alineado-der">Gastos</th>
+                                                <th class="border-top-0 alineado-der">TOTAL</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngIf="lGambuzza" (click)="verLiquidacion(4)">
+                                                <td class="text-truncate">GAMBUZZA MATIAS ELIAN</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lGambuzza.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lCasafus" (click)="verLiquidacion(10)">
+                                                <td class="text-truncate">CASAFUS SANTIAGO ANTONIO</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lCasafus.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lChiardola" (click)="verLiquidacion(5)">
+                                                <td class="text-truncate">CHIARDOLA IVAN</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lChiardola.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+
+                                            <tr *ngIf="lEstrada" (click)="verLiquidacion(9)">
+                                                <td class="text-truncate">ESTRADA MARCELO</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lEstrada.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lFugas" (click)="verLiquidacion(0)">
+                                                <td class="text-truncate">FUGAS ALFREDO RAUL</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lFugas.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lJacob" (click)="verLiquidacion(3)">
+                                                <td class="text-truncate">JACOB GERMAN</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lJacob.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lReynoso" (click)="verLiquidacion(6)">
+                                                <td class="text-truncate">REYNOSO DIEGO ALEJANDRO</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lReynoso.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lMilocco" (click)="verLiquidacion(7)">
+                                                <td class="text-truncate">MILOCCO MARIANO</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lMilocco.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lNeto" (click)="verLiquidacion(2)">
+                                                <td class="text-truncate">NETTO FABIAN</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lNeto.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lSpector" (click)="verLiquidacion(8)">
+                                                <td class="text-truncate">SPECTOR WALTER</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lSpector.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                            <tr *ngIf="lVila" (click)="verLiquidacion(1)">
+                                                <td class="text-truncate">VILA SUAREZ EMMANUEL</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.sueldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.objetivoKg | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.objetivoUn | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.objetivoValor | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.objetivoArfv | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.objetivoArfc | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.premios | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.viaticos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.gastos | currency:"ARS":"symbol" }}</td>
+                                                <td class="text-truncate alineado-der">{{ lVila.total | currency:"ARS":"symbol" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <div class="row" *ngIf="visualizar">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Detalle Liquidación Completa</h4>
+                        </div>
+                    </div>
+                </div>     
+                <!-- end page title -->
+
+                <div class="row" *ngIf="visualizar">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="clearfix">
+                                    <div class="float-left">
+                                        <h4><b>{{liquidacionVer.vendedor}}</b></h4>
+                                        <h5>Mes: {{mes}}/{{ano}}</h5>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="!especial">
+                                    <div class="col-md-12 mt-4">
+                                        <h5>Modelo de liquidación anterior</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="border-top-0">Item</th>
+                                                        <th class="border-top-0 alineado-der">Efectivo Antes</th>
+                                                        <th class="border-top-0 alineado-der">Efectivo Despues</th>
+                                                        <th class="border-top-0 alineado-der">Cheques Antes</th>
+                                                        <th class="border-top-0 alineado-der">Cheques Despues</th>
+                                                        <th class="border-top-0 alineado-der">Depositos Antes</th>
+                                                        <th class="border-top-0 alineado-der">Depositos Despues</th>
+                                                        <th class="border-top-0 alineado-der">Cobrado</th>
+                                                        <th class="border-top-0 alineado-der">Comisiones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngIf="cprChiardola">
+                                                        <td class="text-truncate">Ventas</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.efectivoA | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.efectivoB | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.chequeA | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.chequeB | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.depositoA | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.depositoB | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.cobrado | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ cprVer.total | currency:"ARS":"symbol" }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="!especial">
+                                    <div class="col-md-12 mt-4">
+                                        <h5>Modelo de liquidación nuevo</h5>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr><th>#</th>
+                                                    <th>Item</th>
+                                                    <th>Objetivos</th>
+                                                    <th>Realizado</th>
+                                                    <th>Objetivo %</th>
+                                                    <th>Ventas</th>
+                                                    <th>Comisión</th>
+                                                    <th class="text-right">Total</th>
+                                                </tr></thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            <b>Sueldo</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.sueldo | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>
+                                                            <b>Aguinaldo</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.aguinaldo | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Ventas</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.ventasobj | currency}}</td>
+                                                        <td>{{objetivosVer.ventas | currency}}</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.ventasp < 0.85, 
+                                                                        'text-warning':objetivosVer.ventasp < 0.95 && objetivosVer.ventasp > 0.85,
+                                                                        'text-success':objetivosVer.ventasp > 0.95}"><b>{{objetivosVer.ventasp | percent}}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjVenta | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoValor | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Cantidad</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.cantobj}} Unidades</td>
+                                                        <td>{{objetivosVer.cant }} Unidades</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.cantp < 0.85, 
+                                                                        'text-warning':objetivosVer.cantp < 0.95 && objetivosVer.cantp > 0.85,
+                                                                        'text-success':objetivosVer.cantp > 0.85}"><b>{{objetivosVer.cantp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjCant | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoUn | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Kilogramos</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.kgobj}} Kg</td>
+                                                        <td>{{objetivosVer.kg }} Kg</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.kgp < 0.85, 
+                                                                        'text-warning':objetivosVer.kgp < 0.95 && objetivosVer.kgp > 0.85,
+                                                                        'text-success':objetivosVer.kgp > 0.85}"><b>{{objetivosVer.kgp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjKg | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoKg | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td>
+                                                            <b>Comisión por ARF Ventas</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.arfvobj | currency:"ARS":"symbol" }}</td>
+                                                        <td>{{objetivosVer.arfv | currency:"ARS":"symbol" }}</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.arfvp < 0.85, 
+                                                                        'text-warning':objetivosVer.arfvp < 0.95 && objetivosVer.arfvp > 0.85,
+                                                                        'text-success':objetivosVer.arfvp > 0.85}"><b>{{objetivosVer.arfvp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjArfv | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoArfv | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>7</td>
+                                                        <td>
+                                                            <b>Comisión por ARF Cantidad</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.arfcobj}} Un</td>
+                                                        <td>{{objetivosVer.arfc }} Un</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.arfcp < 0.85, 
+                                                                        'text-warning':objetivosVer.arfcp < 0.95 && objetivosVer.arfcp > 0.85,
+                                                                        'text-success':objetivosVer.arfcp > 0.85}"><b>{{objetivosVer.arfcp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjArfc | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoArfc | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>8</td>
+                                                        <td>
+                                                            <b>Viaticos</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.viaticos | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>9</td>
+                                                        <td>
+                                                            <b>Gastos</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.gastos | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>10</td>
+                                                        <td>
+                                                            <b>Premios</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.premios | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>11</td>
+                                                        <td>
+                                                            <b>TOTAL</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.ventasp < 0.85, 
+                                                                        'text-warning':objetivosVer.ventasp < 0.95 && objetivosVer.ventasp > 0.85,
+                                                                        'text-success':objetivosVer.ventasp > 0.85}"><b>{{objetivosVer.coeficiente | percent}}</b></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right"><b>
+                                                            {{sumatoriasVer.total | currency}}</b>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="especial">
+                                    <div class="col-md-12 mt-4">
+                                        <h5>Modelo de liquidación nuevo</h5>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr><th>#</th>
+                                                    <th>Item</th>
+                                                    <th>Objetivos</th>
+                                                    <th>Realizado</th>
+                                                    <th>Objetivo %</th>
+                                                    <th>Ventas</th>
+                                                    <th>Comisión</th>
+                                                    <th class="text-right">Total</th>
+                                                </tr></thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            <b>Sueldo</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.sueldo | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>
+                                                            <b>Aguinaldo</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.aguinaldo | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Ventas</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.ventasobj | currency}}</td>
+                                                        <td>{{objetivosVer.ventas | currency}}</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.ventasp < 0.85, 
+                                                                        'text-warning':objetivosVer.ventasp < 0.95 && objetivosVer.ventasp > 0.85,
+                                                                        'text-success':objetivosVer.ventasp > 0.85}"><b>{{objetivosVer.ventasp | percent}}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjVenta | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoValor | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Cantidad</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.cantobj}} Unidades</td>
+                                                        <td>{{objetivosVer.cant }} Unidades</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.cantp < 0.85, 
+                                                                        'text-warning':objetivosVer.cantp < 0.95 && objetivosVer.cantp > 0.85,
+                                                                        'text-success':objetivosVer.cantp > 0.85}"><b>{{objetivosVer.cantp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjCant | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoUn | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>
+                                                            <b>Comisión por Objetivos Kilogramos</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.kgobj}} Kg</td>
+                                                        <td>{{objetivosVer.kg }} Kg</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.kgp < 0.85, 
+                                                                        'text-warning':objetivosVer.kgp < 0.95 && objetivosVer.kgp > 0.85,
+                                                                        'text-success':objetivosVer.kgp > 0.85}"><b>{{objetivosVer.kgp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjKg | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoKg | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td>
+                                                            <b>Comisión por ARF Ventas</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.arfvobj | currency:"ARS":"symbol" }}</td>
+                                                        <td>{{objetivosVer.arfv | currency:"ARS":"symbol" }}</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.arfvp < 0.85, 
+                                                                        'text-warning':objetivosVer.arfvp < 0.95 && objetivosVer.arfvp > 0.85,
+                                                                        'text-success':objetivosVer.arfvp > 0.85}"><b>{{objetivosVer.arfvp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjArfv | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoArfv | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>7</td>
+                                                        <td>
+                                                            <b>Comisión por ARF Cantidad</b>
+                                                        </td>
+                                                        <td>{{objetivosVer.arfcobj}} Un</td>
+                                                        <td>{{objetivosVer.arfc }} Un</td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.arfcp < 0.85, 
+                                                                        'text-warning':objetivosVer.arfcp < 0.95 && objetivosVer.arfcp > 0.85,
+                                                                        'text-success':objetivosVer.arfcp > 0.85}"><b>{{objetivosVer.arfcp | percent }}</b></td>
+                                                        <td>{{cprVer.cobrado | currency}}</td>
+                                                        <td>{{objetivosVer.ObjArfc | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoArfc | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>8</td>
+                                                        <td>
+                                                            <b>Comisión por Ventas Canal Tradicional</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td [ngClass]="{'text-danger':objetivosEsp[0].coeficiente < 0.85, 
+                                                                        'text-warning':objetivosEsp[0].coeficiente < 0.95 && objetivosEsp[0].coeficiente > 0.85,
+                                                                        'text-success':objetivosEsp[0].coeficiente > 0.85}"><b>{{objetivosEsp[0].coeficiente | percent }}</b></td>
+                                                        <td>{{objetivosEsp[0].ventastotales | currency}}</td>
+                                                        <td>{{sumatoriasVer.percObjetivoVentasTotales | percent:'1.2'}}</td>
+                                                        <td class="text-right">{{sumatoriasVer.objetivoVentasTotales | currency}}</td>
+                                                    </tr>
+
+                                                    <tr *ngIf="liquidacionVer.vendedor == 'CHIARDOLA IVAN'">
+                                                        <td>8</td>
+                                                        <td>
+                                                            <b>Comisión por Cobranza de Vendedores</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>{{objetivosEsp[0].ventastotales | currency}}</td>
+                                                        <td>0.6%</td>
+                                                        <td class="text-right">{{sumatoriasVer.premioComisionVentas | currency}}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>9</td>
+                                                        <td>
+                                                            <b>Viaticos</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.viaticos | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>10</td>
+                                                        <td>
+                                                            <b>Gastos</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.gastos | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>11</td>
+                                                        <td>
+                                                            <b>Premios</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right">{{liquidacionVer.premios | currency}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>12</td>
+                                                        <td>
+                                                            <b>TOTAL</b>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td [ngClass]="{'text-danger':objetivosVer.ventasp < 0.85, 
+                                                                        'text-warning':objetivosVer.ventasp < 0.95 && objetivosVer.ventasp > 0.85,
+                                                                        'text-success':objetivosVer.ventasp > 0.85}"><b>{{objetivosVer.coeficiente | percent}}</b></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-right"><b>
+                                                            {{sumatoriasVer.total | currency}}</b>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mt-4">
+                                        <h5>Efectivo por entregar</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="border-top-0">Item</th>
+                                                        <th class="border-top-0 alineado-der">Total</th>
+                                                        <th class="border-top-0 alineado-der">Sueldo</th>
+                                                        <th class="border-top-0 alineado-der">Aguinaldo</th>
+                                                        <th class="border-top-0 alineado-der">Adelantos</th>
+                                                        <th class="border-top-0 alineado-der">Total Efectivo</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngIf="cprBonazola">
+                                                        <td class="text-truncate">Efectivo</td>
+                                                        <td class="text-truncate alineado-der">{{ sumatoriasVer.total | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ liquidacionVer.sueldo | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ liquidacionVer.aguinaldo | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ liquidacionVer.adelanto | currency:"ARS":"symbol" }}</td>
+                                                        <td class="text-truncate alineado-der">{{ efectivo | currency:"ARS":"symbol" }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button class="btn btn-success mt-4" type="button" (click)="visualizar = false">Volver</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+            </div> <!-- container-fluid -->
+        </div>
+        <app-footer></app-footer>
+    </div>
+</div>

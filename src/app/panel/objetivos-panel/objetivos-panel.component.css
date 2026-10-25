@@ -1,0 +1,15 @@
+.alineado-der {
+    text-align: right;
+}
+
+.text-truncate {
+    color: #000000;
+}
+
+table {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+.bg-naranja {
+    background: #FA9230;
+}

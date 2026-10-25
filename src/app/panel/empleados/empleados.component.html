@@ -1,0 +1,114 @@
+<div id="layout-wrapper">
+    <div class="main-content">
+        <app-navbar></app-navbar>
+        <app-toolbar></app-toolbar>
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Panel de Administración de Empleados</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Empleados</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover table-xl mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">#</th>
+                                                <th class="border-top-0">Legajo</th>
+                                                <th class="border-top-0">Nombre</th>
+                                                <th class="border-top-0">Sector</th>
+                                                <th class="border-top-0">Objetivos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let i=index, let item of empleados">
+                                                <td class="text-truncate">
+                                                    <div class="row">
+                                                        <i class="bi-trash btn-action" (click)="eliminarEmpleado(i)"></i>
+                                                        <i class="bi-pencil btn-action" (click)="editarEmpleado(i)"></i>
+                                                    </div>
+                                                </td>
+                                                <td class="text-truncate">{{ item.legajo }}</td>
+                                                <td class="text-truncate">{{ item.nombre }}</td>
+                                                <td class="text-truncate">{{ item.sector }}</td>
+                                                <td class="text-truncate">{{ item.objetivos }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Alta nuevo empleado</h4>
+                                <form (ngSubmit)="agregarEmpleado()" #empleado="ngForm">
+                                    <div class="form-group">
+                                        <label>Legajo</label>
+                                        <input type="text" 
+                                            class="form-control" 
+                                            placeholder="Legajo"
+                                            [(ngModel)]="nuevoEmpleado.legajo"
+                                            name="legajo"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input type="text" 
+                                            class="form-control" 
+                                            placeholder="Nombre"
+                                            [disabled]="editMode"
+                                            [(ngModel)]="nuevoEmpleado.nombre"
+                                            name="nombre"
+                                        >
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Sector</label>
+                                        <select class="form-control" 
+                                            [(ngModel)]="nuevoEmpleado.sector"
+                                            name="sector">
+                                            <option *ngFor="let item of sectores" [value]="item">{{ item }}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Premios por objetivo</label>
+                                        <select class="form-control" 
+                                            [(ngModel)]="nuevoEmpleado.objetivos"
+                                            name="objetivos">
+                                            <option [value]=true >SI</option>
+                                            <option [value]=false >NO</option>
+                                        </select>
+                                    </div>
+
+                                    <div *ngIf="editMode; else elseBlock">
+                                        <div class="d-flex justify-content-around">
+                                            <button type="reset" class="btn btn-danger col-md-5" (click)="cancelarEdit()">Cancelar</button>
+                                            <button type="submit" class="btn btn-success col-md-5">Actualizar Empleado</button>
+                                        </div>
+                                    </div>
+                                    <ng-template #elseBlock>
+                                        <button type="submit" class="btn btn-success btn-block">Agregar Empleado</button>
+                                    </ng-template>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- container-fluid -->
+        </div>
+        <app-footer></app-footer>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+// 
+// _table.scss
+// 
+
+//Table centered
+
+.table-centered {
+  td:not(.textoTabla),th {
+      vertical-align: middle !important;
+  }
+}
+
+.table-nowrap {
+  th, td {
+    white-space: nowrap;
+  }
+}

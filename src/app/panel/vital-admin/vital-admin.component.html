@@ -1,0 +1,236 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de asignacion de kilos VitalCan<br>CONS ID 10013 - CONJ ID 139</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-10 form-group">
+                    <h4 class="card-title overflow-hidden">Tabla de kilos Vital mensuales</h4>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Mes</label>
+                    <select class="form-control" 
+                        id="mes" 
+                        [(ngModel)]=mes
+                        name="mes">
+                      <option value=1>ENE</option>
+                      <option value=2>FEB</option>
+                      <option value=3>MAR</option>
+                      <option value=4>ABR</option>
+                      <option value=5>MAY</option>
+                      <option value=6>JUN</option>
+                      <option value=7>JUL</option>
+                      <option value=8>AGO</option>
+                      <option value=9>SEP</option>
+                      <option value=10>OCT</option>
+                      <option value=11>NOV</option>
+                      <option value=12>DIC</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Año</label>
+                    <select class="form-control" 
+                        id="ano" 
+                        [(ngModel)]=ano
+                        name="ano">
+                      <option value=2025>2025</option>
+                      <option value=2026>2026</option>
+                      <option value=2027>2027</option>
+                      <option value=2028>2028</option>
+                      <option value=2029>2029</option>
+                      <option value=2030>2030</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-4">
+                    <button 
+                        class="btn btn-success mb-4"
+                        type="button" 
+                        (click)="buscarDatoMes(mes, ano)">
+                      Cargar Mes
+                    </button>
+                  </div>
+                </div>
+                <h4 class="card-title overflow-hidden">
+                  Cargar XML de Kilos VitalCan
+                </h4>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="xmlliq">XML Kilos VitalCan</label>
+                            <textarea
+                                class="form-control"
+                                id="xmlobj"
+                                name="xmlobj"
+                                [(ngModel)]="xmlobj"
+                                rows="3"
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                      <button
+                        class="btn btn-success mr-2"
+                        type="button"
+                        (click)="procesarXML()">
+                        Procesar Kilos VitalCan
+                      </button>
+                    </div>
+                </div>
+                <div class="table-responsive" *ngIf="kilosVital != undefined">
+                  <h4 class="card-title overflow-hidden mt-4">
+                    CLIENTES VITALCAN
+                  </h4>
+                  <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 borde-izq"><b>Cliente</b></th>
+                        <th class="border-top-0 alineado-der">Therapy</th>
+                        <th class="border-top-0 alineado-der">Wet</th>
+                        <th class="border-top-0 alineado-der">Balanced</th>
+                        <th class="border-top-0 alineado-der">Complete</th>
+                        <th class="border-top-0 alineado-der">BalancedNR</th>
+                        <th class="border-top-0 alineado-der">Nutrique</th>
+                        <th class="border-top-0 alineado-der">Kilos</th>
+                        <th class="border-top-0 alineado-der">Kilos +</th>
+                        <th class="border-top-0 alineado-der">Kilos Totales</th>
+                        <th class="border-top-0 alineado-der">Ventas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngIf="kilosVital.length == 0">
+                        <td colspan="5" class="text-center">
+                          No hay datos para mostrar
+                        </td>
+                      </tr>
+                      <tr *ngIf="kilosVital.length > 0">
+                        <td class="text-truncate borde-izq">
+                          <b>Cantidades por ajustar</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ therapyUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ wetUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ balancedUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ completeUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ balancedNRUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ nutriqueUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ unidadesUI | number : "1.0-0" }}</b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b></b>
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          <b>{{ ventasUI | currency : "ARS" : "symbol"}}</b>
+                        </td>
+                      </tr>
+                      <tr *ngFor="let kilos of kilosVital; let i = index">
+                          <td class="text-truncate borde-izq">
+                              {{ kilos.cliente }}
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.therapy + (kilos.extrakilos * porcentualTherapy) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.wet + (kilos.extrakilos * porcentualWet) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.balanced + (kilos.extrakilos * porcentualBalanced) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.complete + (kilos.extrakilos * porcentualComplete) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.balancedNR + (kilos.extrakilos * porcentualBalancedNR) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.nutrique + (kilos.extrakilos * porcentualNutrique) | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            <b>
+                                {{ kilos.kilos | number : "1.0-0" }}
+                            </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                              <b>
+                                  <input type="number" [(ngModel)]="kilos.extrakilos" (ngModelChange)="recalcularUnidadesVital()" class="form-control form-control-sm" style="width: 80px; text-align: right;" />
+                              </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                              <b>
+                                  {{ kilos.kilos + kilos.extrakilos | number : "1.0-0" }}
+                              </b>
+                          </td>
+                          <td class="text-truncate alineado-der">
+                              <b>
+                                  {{ kilos.ventas + (kilos.extrakilos * precioMedioVital)| currency : "ARS" : "symbol"}}
+                              </b>
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                      <button
+                        class="btn btn-success mr-2"
+                        type="button"
+                        (click)="guardarCambios()">
+                        Guardar Cambios
+                      </button>
+                  </div>
+                </div>
+              </div> 
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,239 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-0 font-size-18">
+                Gráficas de comparación objetivos
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-2 form-group">
+                <label for="mesGraficas">Mes</label>
+                <select
+                  class="form-control"
+                  id="mesGraficas"
+                  [(ngModel)]="mes"
+                  name="mesGraficas"
+                >
+                  <option value="01">1er Trimestre</option>
+                  <option value="04">2do Trimestre</option>
+                  <option value="07">3er Trimestre</option>
+                  <option value="10">4to Trimestre</option>
+                </select>
+              </div>
+              <div class="col-md-2 form-group">
+                <label for="anoGraficas">Año</label>
+                <select
+                  class="form-control"
+                  id="anoGraficas"
+                  [(ngModel)]="ano"
+                  name="anoGraficas"
+                >
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-4">
+                <button
+                  class="btn btn-success btn-cargar"
+                  (click)="cargarDatosGraficos()"
+                >
+                  Cargar Graficas
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h6>OBSERVACIONES</h6>
+                <h6 *ngIf="ano == '2021'">
+                  Año 2020: no considera punto de venta N°4
+                </h6>
+                <h6>Año 2021: no considera punto de venta N°4, N°5 y N°111</h6>
+                <h6 *ngIf="ano == '2022'">
+                  Año 2022: no considera punto de venta N°4, N°5, N°999 y N°9999
+                </h6>
+              </div>
+              <div class="col-12">
+                <button
+                  class="btn btn-warning mr-3 mb-3 mt-2"
+                  (click)="calcularEmpresa(0)"
+                >
+                  Canal Tradicional
+                </button>
+                <button
+                  class="btn btn-warning mr-3 mb-3 mt-2"
+                  (click)="calcularEmpresa(1)"
+                >
+                  Canal Distribuidor
+                </button>
+                <button
+                  class="btn btn-warning mr-3 mb-3 mt-2"
+                  (click)="calcularEmpresa(2)"
+                >
+                  Total Empresa
+                </button>
+              </div>
+            </div>
+            <!--
+                        <h4 class="card-title overflow-hidden">Cargar nuevo XML</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="col-md-2 form-group">
+                                    <label for="mesGrafico">Mes</label>
+                                    <select class="form-control" 
+                                        id="mesGrafico"
+                                        [(ngModel)]="mesGrafico"
+                                        name="mesGrafico">
+                                        <option value="01">Enero</option>
+                                        <option value="02">Febrero</option>
+                                        <option value="03">Marzo</option>
+                                        <option value="04">Abril</option>
+                                        <option value="05">Mayo</option>
+                                        <option value="06">Junio</option>
+                                        <option value="07">Julio</option>
+                                        <option value="08">Agosto</option>
+                                        <option value="09">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="xmlliq">XML (Observación: Fijar año y mes desde el back)</label>
+                                    <textarea class="form-control" 
+                                        id="xmlobj" 
+                                        name="xmlobj"
+                                        [(ngModel)]="xmlobj" 
+                                        rows="3"></textarea>
+                                </div>
+                                <button class="btn btn-success mr-2" type="button" (click)="procesarXML()">Procesar Objetivos</button>
+                            </div>
+                        </div> 
+                        -->
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-xl-12">
+                    <h2>{{ vendedor }}</h2>
+                  </div>
+                  <div class="col-xl-6 mt-5">
+                    <h3 class="overflow-hidden">Ventas</h3>
+                    <h6>
+                      Ventas ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.anop }}:
+                      {{ ventas2020 | currency : "ARS" : "symbol" }}
+                    </h6>
+                    <h6>
+                      Ventas ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.ano }}:
+                      {{ ventas2021 | currency : "ARS" : "symbol" }}
+                    </h6>
+                    <h6>
+                      Aumento porcentual: {{ ventasDif | percent : "1.0" }}
+                    </h6>
+                    <div>
+                      <div>
+                        <div style="display: block">
+                          <canvas
+                            baseChart
+                            [datasets]="barChartVentas"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [plugins]="barChartPlugins"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType"
+                          >
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 mt-5">
+                    <h3 class="overflow-hidden">Unidades</h3>
+                    <h6>
+                      Unidades ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.anop }}: {{ unidades2020 }} Unidades
+                    </h6>
+                    <h6>
+                      Unidades ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.ano }}: {{ unidades2021 }} Unidades
+                    </h6>
+                    <h6>
+                      Aumento porcentual: {{ unidadesDif | percent : "1.0" }}
+                    </h6>
+                    <div>
+                      <div>
+                        <div style="display: block">
+                          <canvas
+                            baseChart
+                            [datasets]="barChartUnidades"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [plugins]="barChartPlugins"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType"
+                          >
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 mt-5">
+                    <h3 class="overflow-hidden">Kilogramos</h3>
+                    <h6>
+                      Kilogramos ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.anop }}: {{ kg2020 }} Kg
+                    </h6>
+                    <h6>
+                      Kilogramos ({{ barChartLabels[0] }} -
+                      {{ barChartLabels[1] }} - {{ barChartLabels[2] }})
+                      {{ this.ano }}: {{ kg2021 }} Kg
+                    </h6>
+                    <h6>Aumento porcentual: {{ kgDif | percent : "1.0" }}</h6>
+                    <div>
+                      <div>
+                        <div style="display: block">
+                          <canvas
+                            baseChart
+                            [datasets]="barChartKg"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [plugins]="barChartPlugins"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType"
+                          >
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

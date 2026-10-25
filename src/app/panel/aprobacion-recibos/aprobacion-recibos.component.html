@@ -1,0 +1,880 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Aprobación de Recibos</h4>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row" *ngIf="!verEditar">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">Ultimos Recibos</h4>
+                <div class="row">
+                  <div class="col-md-10">
+                    <button class="btn btn-sm btn-warning mr-3" (click)="noFiltrar()">TODOS</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('FN')">NETTO</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('GJ')">JACOB</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('BB')">BEARZOTTI</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('JP')">PERALTA</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('AA')">ATTIE</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('MS')">SILVESTRI</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('AG')">GARCIA</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('LC')">CORREA</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('AF')">FUGAS</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('WE')">EGEA</button>
+                    <button class="btn btn-sm btn-primary mr-3" (click)="filtrar('WS')">SPECTOR</button>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="row align-items-center">
+                      <div class="col-md-4">
+                        <label class="mb-0" for="esquema">Esquema:</label>
+                      </div>
+                      <div class="col-md-8">
+                        <select class="form-control" id="esquema" name="esquema" [(ngModel)]="esquemaSelec"
+                          (change)="filtrar(filtroSelec)">
+                          <option value="1" selected>Todos</option>
+                          <option value="false">Esquema 1</option> <!-- false -->
+                          <option value="true">Esquema 2</option> <!-- true -->
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Fecha</th>
+                        <th class="border-top-0">Estado</th>
+                        <th class="border-top-0">Aprobado</th>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0">Esquema</th>
+                        <th class="border-top-0">Cliente</th>
+                        <th class="border-top-0">Cond. IVA</th>
+                        <th class="border-top-0 alineado-der">Efectivo</th>
+                        <th class="border-top-0 alineado-der">Cheques</th>
+                        <th class="border-top-0 alineado-der">Depositos</th>
+                        <th class="border-top-0 alineado-der">Total</th>
+                        <th class="border-top-0">Eliminar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let recibo; of: recibos" class="renglon-tabla"
+                        (click)="verRecibo(recibo.id)">
+                        <td class="text-truncate">
+                          {{ recibo.fecha | date : "dd/MM/yy h:mm a" }}
+                        </td>
+                        <td class="text-truncate">
+                          <span (click)="desaprobarRecibo(recibo)" class="badge badge-info">
+                            REVISAR
+                          </span>
+                        </td>
+                        <td class="text-truncate">
+                          <span *ngIf="recibo.aprobado" class="badge badge-success">
+                            APROBADO
+                          </span>
+                          <span *ngIf="!recibo.aprobado" class="badge badge-danger">
+                            POR APROBAR
+                          </span>
+                        </td>
+                        <td class="text-truncate">{{ recibo.vendedor }}</td>
+                        <td class="text-truncate">
+                          <span *ngIf="recibo.colorRecibo" class="badge badge-dark">
+                            ESQUEMA II
+                          </span>
+                          <span *ngIf="!recibo.colorRecibo" class="badge badge-light">
+                            ESQUEMA I
+                          </span>
+                        </td>
+                        <td class="text-truncate">
+                          {{ recibo.cliente.razonSocial }}
+                        </td>
+                        <td class="text-truncate">
+                          {{ recibo.cliente.sit_ante_iva_nombre }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ recibo.efectivo | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ recibo.cheque | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ recibo.deposito | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate alineado-der">
+                          {{ recibo.total | currency : "ARS" : "symbol" }}
+                        </td>
+                        <td class="text-truncate">
+                          <i (click)="eliminarRecibo(recibo, i)"
+                            class="bx bx-x float-right m-0 h2 text-muted btn-quitar"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="alineado-der"><b>{{totalEfectivo | currency : "ARS" : "symbol"}}</b></td>
+                        <td class="alineado-der"><b>{{totalCheques | currency : "ARS" : "symbol"}}</b></td>
+                        <td class="alineado-der"><b>{{totalDepositos | currency : "ARS" : "symbol"}}</b></td>
+                        <td class="alineado-der"><b>{{totalRecibos | currency : "ARS" : "symbol"}}</b></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <button class="btn btn-sm btn-danger mt-3" (click)="eliminarRecibos()">
+                      ELIMINAR TODOS LOS RECIBOS
+                    </button>
+                    <button class="btn btn-sm btn-success mt-3 ml-3" (click)="eliminarRecibosAprobados()">
+                      ELIMINAR RECIBOS APROBADOS
+                    </button>
+                    <button class="btn btn-sm btn-info mt-3 ml-3" (click)="generarExcel()">
+                      GENERAR REPORTE EXCEL
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+
+        <!-- start page title -->
+        <div class="row" *ngIf="reciboEditar; verEditar">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Recibo a Aprobar</h4>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+        <!-- Recibo a aprobar -->
+        <div class="row" *ngIf="reciboEditar">
+          <div class="col-xl-6">
+            <div class="col-xl-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="pt-2 background-data">
+                    <h6>Fecha: {{reciboEditar.fecha | date : "dd/MM/yy h:mm a"}}</h6>
+                    <h6>Vendedor: {{reciboEditar.vendedor}} - {{(listaVendedores[0] === undefined ? '' :
+                      listaVendedores[0].nombre)}}</h6>
+                    <h6>Cliente: {{reciboEditar.cliente.razonSocial}} - ID: {{reciboEditar.idCliente}}</h6>
+                    <p>
+                      Dirección: {{reciboEditar.cliente.domicilios[0].domicilio}}&emsp;Localidad:
+                      {{reciboEditar.cliente.domicilios[0].localidad.nombre}} <br>
+                      CUIT: {{reciboEditar.cliente.cuit}} <br>
+                      Cond. IVA: {{reciboEditar.cliente.sit_ante_iva_nombre}}
+                    </p>
+                    <h6>Cond. Venta: ID: {{condicionActual.idCondVenta}} - {{condicionActual.nombreCondVenta}}</h6>
+                  </div>
+
+                  <div class="table-responsive">
+                    <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                      <thead>
+                        <tr>
+                          <th class="border-top-0">Tipo</th>
+                          <th class="border-top-0">Fecha</th>
+                          <th class="border-top-0">Días</th>
+                          <th class="border-top-0">Nro</th>
+                          <th class="border-top-0 alineado-der">Subtotal</th>
+                          <th class="border-top-0 alineado-der">Descuento</th>
+                          <th class="border-top-0 alineado-der">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let comprobante of reciboEditar.facturas">
+                          <td class="text-truncate" [ngSwitch]="comprobante.tipo">
+                            <span class="badge badge-soft-primary p-2" *ngSwitchCase="'Factura'">{{
+                              comprobante.tipo
+                              }}</span>
+                            <span class="badge badge-soft-success p-2" *ngSwitchCase="'Recibo'">{{
+                              comprobante.tipo
+                              }}</span>
+                            <span class="badge badge-soft-danger p-2" *ngSwitchCase="'Nota de crédito'">{{
+                              comprobante.tipo
+                              }}</span>
+                            <span class="badge badge-soft-warning p-2" *ngSwitchCase="'Nota de débito'">{{
+                              comprobante.tipo
+                              }}</span>
+                          </td>
+                          <td class="text-truncate">
+                            {{ comprobante.fecha_emision | date : "dd/MM/yy" }}
+                          </td>
+                          <td class="text-truncate">{{ comprobante.dias }}</td>
+                          <td class="text-truncate">
+                            {{ comprobante.nro }}-{{ comprobante.nroCpr }}
+                          </td>
+                          <td class="text-truncate alineado-der">
+                            {{ comprobante.saldo | currency : "ARS" : "symbol" }}
+                          </td>
+                          <td class="text-truncate alineado-der" *ngIf="comprobante.descuento; else sindescuento">
+                            ({{ comprobante.porcentajeDescuento | percent }}) -
+                            {{
+                            comprobante.descuento | currency : "ARS" : "symbol"
+                            }}
+                          </td>
+                          <ng-template #sindescuento>
+                            <td class="text-truncate"></td>
+                          </ng-template>
+                          <td class="text-truncate alineado-der font-weight-bold">
+                            {{ (comprobante.descuento ? comprobante.saldo * (1-comprobante.porcentajeDescuento) :
+                            comprobante.saldo) | currency : "ARS" : "symbol" }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="pt-2 background-data">
+                    <table class="wide-no-border">
+                      <tr>
+                        <td class="column-fix-width">
+                          <h6>
+                            Total Facturas: {{ reciboEditar.subtotal | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                        <td class="column-fix-width">
+                          <h6>
+                            Total N. de Cred.: {{ reciboEditarNC | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="column-fix-width">
+                          <h6>
+                            Total N. de Deb.: {{ reciboEditarND | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                        <td class="column-fix-width">
+                          <h6>
+                            Total Saldo Recibos: {{ reciboEditarRC | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <div>
+                    <table class="wide-no-border mt-2">
+                      <tr>
+                        <td>
+                          <h6>
+                            Total a pagar: {{ totalFacturaConDescNotaDebito - totalReciboNotaCredito | currency : "ARS"
+                            : "symbol" }}
+                          </h6>
+                        </td>
+                        <td>
+                          <h6>
+                            Total pagado: {{ totalFormasPago | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                        <td>
+                          <h6>
+                            Saldo: {{ totalFormasPago - (totalFacturaConDescNotaDebito - totalReciboNotaCredito) |
+                            currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- end card-body-->
+              </div>
+              <!-- end card-->
+            </div>
+            <div class="col-xl-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title overflow-hidden">Formas de pago</h4>
+                  <p>Comentario: {{ reciboEditar.comentario }}</p>
+                  <!-- <h6 class="text-muted">
+                    Efectivo:
+                    {{ reciboEditar.efectivo | currency : "ARS" : "symbol" }}
+                  </h6>
+                  <h6 class="text-muted">
+                    Cheques:
+                    {{ reciboEditar.cheque | currency : "ARS" : "symbol" }}
+                  </h6>
+                  <h6 class="text-muted">
+                    Depositos:
+                    {{ reciboEditar.deposito | currency : "ARS" : "symbol" }}
+                  </h6> -->
+
+                  <div class="pt-2 background-data">
+                    <table class="wide-no-border">
+                      <tr>
+                        <td class="column-fix-width">
+                          <h6 class="text-muted">
+                            Efectivo:
+                            {{ reciboEditar.efectivo | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                        <td class="column-fix-width">
+                          <h6 class="text-muted">
+                            Cheques:
+                            {{ reciboEditar.cheque | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="column-fix-width">
+                          <h6 class="text-muted">
+                            Depositos:
+                            {{ reciboEditar.deposito | currency : "ARS" : "symbol" }}
+                          </h6>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <div class="mt-2">
+                    <h6 class="text-muted">
+                      Total:
+                      {{ reciboEditar.efectivo + reciboEditar.cheque + reciboEditar.deposito | currency : "ARS" :
+                      "symbol" }}
+                    </h6>
+                  </div>
+
+                  <div class="form-group row mb-3 mt-2">
+                    <label for="banco" class="col-3 col-form-label">Observación</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="nrorecibo"
+                        placeholder="Campo de observación del recibo" name="nrorecibonuevo" [(ngModel)]="nrorecibonuevo"
+                        required />
+                    </div>
+                  </div>
+                  <h4 class="card-title overflow-hidden mt-4" *ngIf="reciboEditar.cheques">
+                    Detalle de Cheques
+                  </h4>
+                  <div class="table-responsive" *ngIf="reciboEditar.cheques">
+                    <table class="table table-centered table-hover table-xl mb-0">
+                      <thead>
+                        <tr>
+                          <th class="border-top-0">Banco</th>
+                          <th class="border-top-0">Sucursal</th>
+                          <th class="border-top-0">Nro de cheque</th>
+                          <th class="border-top-0">Fecha Conf.</th>
+                          <th class="border-top-0">Fecha Cobro</th>
+                          <th class="border-top-0 alineado-der">Monto</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="
+                            let i = index;
+                            let cheque;
+                            of: reciboEditar.cheques
+                          " data-toggle="modal" data-target="#chequesModal" (click)="cargarCheque(i)">
+                          <td class="text-truncate">{{ cheque.banco }}</td>
+                          <td class="text-truncate">{{ cheque.nrosucursal }}</td>
+                          <td class="text-truncate">
+                            {{ cheque.digitosCheque }}
+                          </td>
+                          <td class="text-truncate">{{ cheque.fecha | date : "dd/MM/yy" }}</td>
+                          <td class="text-truncate">{{ cheque.fechacobro | date : "dd/MM/yy" }}</td>
+                          <td class="text-truncate alineado-der">
+                            {{
+                            cheque.importeCheque | currency : "ARS" : "symbol"
+                            }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <h4 class="card-title overflow-hidden mt-4" *ngIf="reciboEditar.depositos">
+                    Detalle de Depositos
+                  </h4>
+                  <div class="table-responsive" *ngIf="reciboEditar.depositos">
+                    <table class="table table-centered table-hover table-xl mb-0">
+                      <thead>
+                        <tr>
+                          <th class="border-top-0">Banco</th>
+                          <th class="border-top-0">Fecha</th>
+                          <th class="border-top-0">Nro CPR</th>
+                          <th class="border-top-0 alineado-der">Monto</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="
+                            let i = index;
+                            let deposito;
+                            of: reciboEditar.depositos
+                          " data-toggle="modal" data-target="#depositoModal" (click)="cargarDeposito(i)">
+                          <td class="text-truncate">{{ deposito.banco }}</td>
+                          <td class="text-truncate">{{ deposito.fecha | date : "dd/MM/yy" }}</td>
+                          <td class="text-truncate">{{ deposito.nrocpr }}</td>
+                          <td class="text-truncate alineado-der">
+                            {{
+                            deposito.importeBanco | currency : "ARS" : "symbol"
+                            }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="d-flex justify-content-center">
+                    <div class="col-md-6">
+                      <button class="btn btn-block btn-success mt-3" (click)="guardarRecibo(reciboEditar)">
+                        Guardar Recibo
+                      </button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-block btn-success mt-3" *ngIf="reciboEditar.guardado"
+                        (click)="aprobarRecibo(reciboEditar)">
+                        Aprobar Recibo
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- end card-body-->
+              </div>
+              <!-- end card-->
+            </div>
+          </div>
+          <!-- end col -->
+
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div class="col-md-8">
+                    <h4 class="card-title overflow-hidden">Bancos sin contrapartida</h4>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="input-group">
+                      <input class="form-control" aria-label="Search" placeholder="Buscar por ID, monto o banco..."
+                        type="search" id="filter" [(ngModel)]="valorFiltro"
+                        (keyup)="filtrarBancoSinContrapartida($event)">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0 alineado-cen">Seleccionar</th>
+                        <th class="border-top-0">Id</th>
+                        <th class="border-top-0 alineado-der">Monto</th>
+                        <th class="border-top-0">Fecha</th>
+                        <th class="border-top-0">Banco</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="
+                          let i = index;
+                          let bancoSC;
+                          of: listaBSC[selectedPage]">
+                        <td class="text-truncate alineado-cen"><input type="checkbox"
+                            [(ngModel)]='bancoSC.seleccionado'></td>
+                        <td class="text-truncate">{{ bancoSC.cpr_id }}</td>
+                        <td class="text-truncate alineado-der">{{ bancoSC.monto | currency : "ARS" : "symbol" }}</td>
+                        <td class="text-truncate">{{ bancoSC.fec_emision | date : "dd/MM/yy" }}</td>
+                        <td class="text-truncate">{{ bancoSC.razon_social }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div *ngIf="cantPags > 0">
+                    <div class="SwitchContainer" [ngSwitch]="modoPaginado">
+                      <div *ngSwitchCase="0" class="pagination PaginatorContainer">
+                        <div class="flechaIzq">
+                          <a class="deshabilitado"></a>
+                          <a *ngIf="selectedPage != 0" (click)="cambiarPagina(selectedPage - 1)"><i
+                              class="bi bi-caret-left" style="line-height: 0%"></i></a>
+                        </div>
+                        <div *ngFor="let i = index; let page; of: listaBSC">
+                          <a *ngIf="
+                              selectedPage == i && i < 5 && i != cantPags - 1
+                            " class="active" (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                          <a *ngIf="
+                              selectedPage != i && i < 5 && i != cantPags - 1
+                            " (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                        </div>
+                        <div>
+                          <a><i class="bi bi-three-dots"></i></a>
+                        </div>
+                        <div>
+                          <a (click)="cambiarPagina(cantPags - 1)">{{
+                            cantPags
+                            }}</a>
+                        </div>
+                        <div class="flechaDer">
+                          <a (click)="cambiarPagina(selectedPage + 1)"><i class="bi bi-caret-right"
+                              style="line-height: 0%"></i></a>
+                          <a (click)="cambiarPagina(cantPags - 1)"><i class="bi bi-caret-right-fill"
+                              style="line-height: 0%"></i></a>
+                        </div>
+                      </div>
+
+                      <div *ngSwitchCase="1" class="pagination PaginatorContainer">
+                        <div class="flechaIzq">
+                          <a (click)="cambiarPagina(0)"><i class="bi bi-caret-left-fill"
+                              style="line-height: 0%"></i></a>
+                          <a (click)="cambiarPagina(selectedPage - 1)"><i class="bi bi-caret-left"
+                              style="line-height: 0%"></i></a>
+                        </div>
+                        <div>
+                          <a (click)="cambiarPagina(0)">{{ 1 }}</a>
+                        </div>
+                        <div>
+                          <a><i class="bi bi-three-dots"></i></a>
+                        </div>
+                        <div *ngFor="let i = index; let page; of: listaBSC">
+                          <a *ngIf="
+                              selectedPage == i &&
+                              i > selectedPage - 3 && i < selectedPage + 3
+                            " class="active" (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                          <a *ngIf="
+                              selectedPage != i &&
+                              i > selectedPage - 3 && i < selectedPage + 3
+                            " (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                        </div>
+                        <div>
+                          <a><i class="bi bi-three-dots"></i></a>
+                        </div>
+                        <div>
+                          <a (click)="cambiarPagina(cantPags - 1)">{{
+                            cantPags
+                            }}</a>
+                        </div>
+                        <div class="flechaDer">
+                          <a (click)="cambiarPagina(selectedPage + 1)"><i class="bi bi-caret-right"
+                              style="line-height: 0%"></i></a>
+                          <a (click)="cambiarPagina(cantPags - 1)"><i class="bi bi-caret-right-fill"
+                              style="line-height: 0%"></i></a>
+                        </div>
+                      </div>
+
+                      <div *ngSwitchCase="2" class="pagination PaginatorContainer">
+                        <div class="flechaIzq">
+                          <a (click)="cambiarPagina(0)"><i class="bi bi-caret-left-fill"
+                              style="line-height: 0%"></i></a>
+                          <a (click)="cambiarPagina(selectedPage - 1)"><i class="bi bi-caret-left"
+                              style="line-height: 0%"></i></a>
+                        </div>
+                        <div>
+                          <a (click)="cambiarPagina(0)">{{ 1 }}</a>
+                        </div>
+                        <div>
+                          <a><i class="bi bi-three-dots"></i></a>
+                        </div>
+                        <div *ngFor="let i = index; let page; of: listaBSC">
+                          <a *ngIf="selectedPage == i && i > cantPags - 6" class="active" (click)="cambiarPagina(i)">{{
+                            i + 1 }}</a>
+                          <a *ngIf="selectedPage != i && i > cantPags - 6" (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                        </div>
+                        <div class="flechaDer">
+                          <a *ngIf="selectedPage != cantPags - 1" (click)="cambiarPagina(selectedPage + 1)"><i
+                              class="bi bi-caret-right" style="line-height: 0%"></i></a>
+                          <a class="deshabilitado"></a>
+                        </div>
+                      </div>
+
+                      <div *ngSwitchCase="3" class="pagination PaginatorContainer">
+                        <div class="flechaIzq">
+                          <a class="deshabilitado"></a>
+                          <a *ngIf="selectedPage != 0" (click)="cambiarPagina(selectedPage - 1)"><i
+                              class="bi bi-caret-left" style="line-height: 0%"></i></a>
+                        </div>
+                        <div *ngFor="let i = index; let page; of: listaBSC">
+                          <a *ngIf="selectedPage == i" class="active" (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                          <a *ngIf="selectedPage != i" (click)="cambiarPagina(i)">{{ i + 1 }}</a>
+                        </div>
+                        <div class="flechaDer">
+                          <a *ngIf="selectedPage != cantPags - 1" (click)="cambiarPagina(selectedPage + 1)"><i
+                              class="bi bi-caret-right" style="line-height: 0%"></i></a>
+                          <a class="deshabilitado"></a>
+                        </div>
+                      </div>
+                      <div *ngSwitchDefault>xD</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-block btn-success mt-3" (click)="volver()">
+                Volver
+              </button>
+            </div>
+          </div>
+          <!-- end col -->
+
+          <!-- <div>
+            {{ reciboJson | json }}
+          </div> -->
+        </div>
+        <div class="modal fade" id="chequesModal" tabindex="-1" role="dialog" aria-labelledby="chequesModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="chequesModalLabel">
+                  Actualizar datos de cheque
+                </h5>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form *ngIf="modalcheque" autocomplete="off" (ngSubmit)="actualizarCheque()" #formcheque="ngForm">
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Cod Cheque</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="codcheque" placeholder="Codigo del cheque"
+                        name="codcheque" [(ngModel)]="reciboEditar.cheques[indice].codcheque" required />
+                      <button type="button" class="btn btn-primary btn-block" (click)="
+                          procesarCodigoCheque(
+                            reciboEditar.cheques[indice].codcheque,
+                            indice
+                          )
+                        ">
+                        Procesar código de Cheque
+                      </button>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="banco" class="col-3 col-form-label">Banco Nro</label>
+                    <div class="col-9">
+                      <input type="number" class="form-control" id="banco_id" placeholder="Banco ID" name="banco_id"
+                        [(ngModel)]="reciboEditar.cheques[indice].banco_id" required readonly />
+                    </div>
+                    <!-- Agrega un nuevo input para el id_cheque -->
+                    <label for="banco" class="col-3 col-form-label">Banco Cheque</label>
+                    <div class="col-9">
+                      <input type="number" class="form-control" id="id_cheque" placeholder="ID Cheque" name="id_cheque"
+                        [(ngModel)]="reciboEditar.cheques[indice].id_cheque"
+                        (ngModelChange)="asociarBancoId($event, indice)" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="banco" class="col-3 col-form-label">Banco</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="banco" placeholder="Banco" name="banco"
+                        [(ngModel)]="reciboEditar.cheques[indice].banco" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="sucursal" class="col-3 col-form-label">Nro Sucursal</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="sucursal" placeholder="Sucursal" name="nrosucursal"
+                        [(ngModel)]="reciboEditar.cheques[indice].nrosucursal" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codigopostal" class="col-3 col-form-label">Código Postal</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="codigopostal" placeholder="Código postal"
+                        name="codigopostal" [(ngModel)]="reciboEditar.cheques[indice].codigopostal" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="nrocheque" class="col-3 col-form-label">Nro de Cheque</label>
+                    <div class="col-9">
+                      <input type="number" class="form-control" id="nrocheque" placeholder="Número de cheque"
+                        name="digitosCheque" [(ngModel)]="reciboEditar.cheques[indice].digitosCheque" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="nrocuenta" class="col-3 col-form-label">Nro de cuenta</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="nrocuenta" placeholder="Número de cuenta"
+                        name="nrocuenta" [(ngModel)]="reciboEditar.cheques[indice].nrocuenta" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="importe" class="col-3 col-form-label">Importe</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="importe" placeholder="Importe" name="importeCheque"
+                        [(ngModel)]="reciboEditar.cheques[indice].importeCheque" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3 justify-content-end">
+                    <div class="col-9">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="alaorden" name="alaorden"
+                          [(ngModel)]="reciboEditar.cheques[indice].alaorden" />
+                        <label class="custom-control-label" for="alaorden">A la orden</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3 justify-content-end">
+                    <div class="col-9">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="cruzado" name="cruzado"
+                          [(ngModel)]="reciboEditar.cheques[indice].cruzado" />
+                        <label class="custom-control-label" for="cruzado">Cruzado</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3 justify-content-end">
+                    <div class="col-9">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="terceros" name="terceros"
+                          [(ngModel)]="reciboEditar.cheques[indice].terceros" />
+                        <label class="custom-control-label" for="terceros">Terceros</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3 justify-content-end">
+                    <div class="col-9">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="electronico" name="electronico"
+                          [(ngModel)]="reciboEditar.cheques[indice].electronico" />
+                        <label class="custom-control-label" for="electronico">Electrónico</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="fecha" class="col-3 col-form-label">Fecha Emisión</label>
+                    <div class="col-9">
+                      <input type="date" class="form-control" id="fecha" placeholder="dd-mm-aaaa Fecha Emisión"
+                        name="fecha" [(ngModel)]="reciboEditar.cheques[indice].fecha" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="fecha" class="col-3 col-form-label">Fecha Cobro</label>
+                    <div class="col-9">
+                      <input type="date" class="form-control" id="fechacobro" placeholder="dd-mm-aaaa Fecha de Cobro"
+                        name="fechacobro" [(ngModel)]="reciboEditar.cheques[indice].fechacobro" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="nota" class="col-3 col-form-label">Nota</label>
+                    <div class="col-9">
+                      <textarea class="form-control" id="nota" rows="3" name="nota"
+                        [(ngModel)]="reciboEditar.cheques[indice].nota">
+                      </textarea>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-block btn-primary waves-effect waves-light">
+                    Guardar datos
+                  </button>
+                </form>
+                <div class="card text-white bg-success mt-2" *ngIf="cerrarmodal">
+                  <div class="card-body">
+                    <blockquote class="card-bodyquote mb-0">
+                      <p>Los datos fueron correctamente actualizados.</p>
+                      <button class="btn btn-secondary btn-block" data-dismiss="modal">
+                        Cerrar
+                      </button>
+                    </blockquote>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="depositoModal" tabindex="-1" role="dialog" aria-labelledby="depositoModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="depositoModalLabel">
+                  Actualizar datos de deposito
+                </h5>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form *ngIf="modaldeposito" autocomplete="off" (ngSubmit)="actualizarDeposito()" #formdeposito="ngForm">
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Banco</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="bancodep" placeholder="Banco" name="bancodep"
+                        [(ngModel)]="reciboEditar.depositos[indice].banco" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Moneda</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="monedadep" placeholder="Moneda" name="monedadep"
+                        [(ngModel)]="reciboEditar.depositos[indice].monedadep" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Cotización</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="cotizaciondep" placeholder="Cotización"
+                        name="cotizaciondep" [(ngModel)]="reciboEditar.depositos[indice].cotizacion" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Fecha</label>
+                    <div class="col-9">
+                      <input type="date" class="form-control" id="fechadep" placeholder="Formato dd-mm-aaaa"
+                        name="fechadep" [(ngModel)]="reciboEditar.depositos[indice].fecha" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Nr CPR</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="nrcprdep" placeholder="Numero cpr" name="nrcprdep"
+                        [(ngModel)]="reciboEditar.depositos[indice].nrcpr" required />
+                    </div>
+                  </div>
+                  <div class="form-group row mb-3">
+                    <label for="codcheque" class="col-3 col-form-label">Importe</label>
+                    <div class="col-9">
+                      <input type="text" class="form-control" id="importe" placeholder="Importe Banco" name="importe"
+                        [(ngModel)]="
+                          reciboEditar.depositos[indice].importeBanco
+                        " required />
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-3">
+                    <label for="nota" class="col-3 col-form-label">Nota</label>
+                    <div class="col-9">
+                      <textarea class="form-control" id="nota" rows="3" name="nota"
+                        [(ngModel)]="reciboEditar.depositos[indice].nota">
+                      </textarea>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-block btn-primary waves-effect waves-light">
+                    Guardar datos
+                  </button>
+                </form>
+                <div class="card text-white bg-success mt-2" *ngIf="cerrarmodal">
+                  <div class="card-body">
+                    <blockquote class="card-bodyquote mb-0">
+                      <p>Los datos fueron correctamente actualizados.</p>
+                      <button class="btn btn-secondary btn-block" data-dismiss="modal">
+                        Cerrar
+                      </button>
+                    </blockquote>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

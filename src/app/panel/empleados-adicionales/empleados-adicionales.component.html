@@ -1,0 +1,112 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Administración de Adicionales</h4>
+            </div>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-xl-3">
+            <select
+              class="form-control mb-3"
+              id="empleados"
+              [(ngModel)]="nombreEmpleadoSeleccionado"
+              name="empleados"
+              (change)="enableButton()"
+            >
+              <option *ngFor="let empleado of empleados" [value]="empleado.nombre">{{empleado.nombre}}</option>
+            </select>
+            <button
+              type="submit"
+              class="mb-3 btn btn-success btn-block"
+              (click)="cargarAdicionales()"
+              [disabled]="btnDisabled"
+            >Cargar Adicionales del Empleado</button>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 *ngIf="indexEmpleadoSeleccionado!=undefined" class="card-title overflow-hidden">Lista de Adicionales de {{empleados[indexEmpleadoSeleccionado].nombre}}</h4>
+                <h4 *ngIf="indexEmpleadoSeleccionado==undefined" class="card-title overflow-hidden">Lista de Adicionales</h4>
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover table-xl mb-0">
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">#</th>
+                        <th class="border-top-0">Identificador</th>
+                        <th class="border-top-0">Coeficiente</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i=index, let adicional of adicionales">
+                        <td class="text-truncate">
+                          <div class="row">
+                            <i class="bi-trash btn-action" (click)="eliminarAdicional(i)"></i>
+                            <i class="bi-pencil btn-action" (click)="modificarAdicional(i)"></i>
+                          </div>
+                        </td>
+                        <td class="text-truncate">{{adicional.identificador}}</td>
+                        <td class="text-truncate">{{adicional.coeficiente*100}}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h5 class="mt-2" *ngIf="adicionales.length==0 && indexEmpleadoSeleccionado!=undefined">{{empleados[indexEmpleadoSeleccionado].nombre}} no posee adicionales actualmente.</h5>
+                </div>
+              </div> <!-- final card-body -->
+            </div> <!-- final card -->
+          </div> <!-- final col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 *ngIf="!modoModificar" class="card-title overflow-hidden">Agregar Adicional Nuevo</h4>
+                <h4 *ngIf="modoModificar" class="card-title overflow-hidden">Modificar Adicional</h4>
+                <form #formContact="ngForm" (ngSubmit)="agregarAdicional()">
+                  <div class="form-group">
+                    <label>Título Identificador</label>
+                    <input type="text"
+                        class="form-control"
+                        required
+                        placeholder="Ingresar título para el identificador."
+                        [(ngModel)]="nuevoAdicional.identificador"
+                        name="identificador"
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label>Coeficiente</label>
+                    <input type="number"
+                        class="form-control"
+                        required
+                        placeholder="Ingresar porcentaje del coeficiente."
+                        [(ngModel)]="nuevoAdicional.coeficiente"
+                        name="coeficiente"
+                    >
+                  </div>
+                  <div *ngIf="modoModificar; else elseBlock">
+                    <div class="d-flex justify-content-around">
+                        <button type="reset" class="btn btn-danger col-md-5" (click)="cancelarEdit()">Cancelar Modificación</button>
+                        <button [disabled]="formContact.invalid" type="submit" class="btn btn-success col-md-5" (click)="actualizarAdicional()">Actualizar Adicional</button>
+                    </div>
+                  </div>
+                  <ng-template #elseBlock>
+                    <button [disabled]="anotherBtnDisabled || formContact.invalid" type="submit" class="btn btn-success btn-block">Agregar Adicional</button>
+                  </ng-template>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

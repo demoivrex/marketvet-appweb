@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "recibosaf-c64ad",
+    "appWeb": "recibosaf-c64ad",
+    "appweb": "recibosaf-c64ad"
+  },
+  "targets": {
+    "recibosaf-c64ad": {
+      "hosting": {
+        "appweb": [
+          "recibosaf-c64ad"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

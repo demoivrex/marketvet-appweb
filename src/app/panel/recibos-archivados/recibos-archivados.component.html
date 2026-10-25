@@ -1,0 +1,318 @@
+<div id="layout-wrapper">
+    <div class="main-content">
+        <app-navbar></app-navbar>
+        <app-toolbar></app-toolbar>
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Panel de Recibos Archivados</h4>
+                            <button class="btn btn-danger btn-sm" (click)="eliminarRecibosViejos()">
+                                <i class="fas fa-trash-alt mr-1"></i> Eliminar recibos +60 días
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row" *ngIf="!verEditar">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title overflow-hidden">Listado de Recibos Archivados</h4>
+                                <div class="row mb-3">
+                                    <div class="col-md-10">
+                                        <button class="btn btn-sm btn-warning mr-3" (click)="noFiltrar()">TODOS</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('FN')">NETTO</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('GJ')">JACOB</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('BB')">BEARZOTTI</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('JP')">PERALTA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AA')">ATTIE</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('MS')">SILVESTRI</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AG')">GARCIA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('LC')">CORREA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('AF')">FUGAS</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('WE')">EGEA</button>
+                                        <button class="btn btn-sm btn-primary mr-3"
+                                            (click)="filtrar('WS')">SPECTOR</button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <label class="mb-0" for="esquema">Esquema:</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <select class="form-control" id="esquema" name="esquema"
+                                                    [(ngModel)]="esquemaSelec" (change)="filtrar(filtroSelec)">
+                                                    <option value="1" selected>Todos</option>
+                                                    <option value="false">Esquema 1</option>
+                                                    <option value="true">Esquema 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover table-xl mb-0" id="recent-orders">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">Fecha</th>
+                                                <th class="border-top-0">Estado</th>
+                                                <th class="border-top-0">Aprobado</th>
+                                                <th class="border-top-0">Vendedor</th>
+                                                <th class="border-top-0">Esquema</th>
+                                                <th class="border-top-0">Cliente</th>
+                                                <th class="border-top-0">Cond. IVA</th>
+                                                <th class="border-top-0 alineado-der">Efectivo</th>
+                                                <th class="border-top-0 alineado-der">Cheques</th>
+                                                <th class="border-top-0 alineado-der">Depositos</th>
+                                                <th class="border-top-0 alineado-der">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let i = index; let recibo; of: recibos" class="renglon-tabla"
+                                                (click)="verRecibo(recibo)">
+                                                <td class="text-truncate">
+                                                    {{ recibo.fecha | date : "dd/MM/yy h:mm a" }}
+                                                </td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="recibo.rendido" class="badge badge-success">
+                                                        RENDIDO
+                                                    </span>
+                                                    <span *ngIf="!recibo.rendido" class="badge badge-warning">
+                                                        NO RENDIDO
+                                                    </span>
+                                                </td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="recibo.aprobado" class="badge badge-success">
+                                                        APROBADO
+                                                    </span>
+                                                    <span *ngIf="!recibo.aprobado" class="badge badge-danger">
+                                                        POR APROBAR
+                                                    </span>
+                                                </td>
+                                                <td class="text-truncate">{{ recibo.vendedor }}</td>
+                                                <td class="text-truncate">
+                                                    <span *ngIf="recibo.colorRecibo" class="badge badge-dark">
+                                                        ESQUEMA II
+                                                    </span>
+                                                    <span *ngIf="!recibo.colorRecibo" class="badge badge-light">
+                                                        ESQUEMA I
+                                                    </span>
+                                                </td>
+                                                <td class="text-truncate">
+                                                    {{ recibo.cliente.razonSocial }}
+                                                </td>
+                                                <td class="text-truncate">
+                                                    {{ recibo.cliente.sit_ante_iva_nombre }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{ recibo.efectivo | currency : "ARS" : "symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{ recibo.cheque | currency : "ARS" : "symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{ recibo.deposito | currency : "ARS" : "symbol" }}
+                                                </td>
+                                                <td class="text-truncate alineado-der">
+                                                    {{ recibo.total | currency : "ARS" : "symbol" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="alineado-der"><b>{{totalEfectivo | currency : "ARS" :
+                                                        "symbol"}}</b></td>
+                                                <td class="alineado-der"><b>{{totalCheques | currency : "ARS" :
+                                                        "symbol"}}</b></td>
+                                                <td class="alineado-der"><b>{{totalDepositos | currency : "ARS" :
+                                                        "symbol"}}</b></td>
+                                                <td class="alineado-der"><b>{{totalRecibos | currency : "ARS" :
+                                                        "symbol"}}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- end card-body-->
+                        </div>
+                        <!-- end card-->
+                    </div>
+                    <!-- end col -->
+                </div>
+
+                <!-- start page title -->
+                <div class="row" *ngIf="reciboEditar; verEditar">
+                    <div class="col-12">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 font-size-18">Detalle de Recibo Archivado</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <!-- Detalle Recibo -->
+                <div class="row" *ngIf="reciboEditar">
+                    <div class="col-xl-6">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="pt-2 background-data">
+                                        <h6>Fecha: {{reciboEditar.fecha | date : "dd/MM/yy h:mm a"}}</h6>
+                                        <h6>Vendedor: {{reciboEditar.vendedor}}</h6>
+                                        <h6>Cliente: {{reciboEditar.cliente.razonSocial}} - ID:
+                                            {{reciboEditar.idCliente}}</h6>
+                                        <p>
+                                            Dirección: {{reciboEditar.cliente.domicilios[0].domicilio}}&emsp;Localidad:
+                                            {{reciboEditar.cliente.domicilios[0].localidad.nombre}} <br>
+                                            CUIT: {{reciboEditar.cliente.cuit}} <br>
+                                            Cond. IVA: {{reciboEditar.cliente.sit_ante_iva_nombre}}
+                                        </p>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-hover table-xl mb-0"
+                                            id="recent-orders">
+                                            <thead>
+                                                <tr>
+                                                    <th class="border-top-0">Tipo</th>
+                                                    <th class="border-top-0">Fecha</th>
+                                                    <th class="border-top-0">Nro</th>
+                                                    <th class="border-top-0">Saldo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let comprobante of reciboEditar.facturas">
+                                                    <td class="text-truncate">{{ comprobante.tipo }}</td>
+                                                    <td class="text-truncate">
+                                                        {{ comprobante.fecha_emision | date : "dd/MM/yy" }}
+                                                    </td>
+                                                    <td class="text-truncate">
+                                                        {{ comprobante.nro }}-{{ comprobante.nroCpr }}
+                                                    </td>
+                                                    <td class="text-truncate alineado-der">
+                                                        {{ comprobante.saldo | currency : "ARS" : "symbol" }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <button class="btn btn-primary btn-block" (click)="volver()">Volver</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Formas de Pago</h4>
+                                <p>Comentario: {{ reciboEditar.comentario }}</p>
+                                <div class="pt-2 background-data">
+                                    <table class="wide-no-border">
+                                        <tr>
+                                            <td class="column-fix-width">
+                                                <h6 class="text-muted">
+                                                    Efectivo:
+                                                    {{ reciboEditar.efectivo | currency : "ARS" : "symbol" }}
+                                                </h6>
+                                            </td>
+                                            <td class="column-fix-width">
+                                                <h6 class="text-muted">
+                                                    Cheques:
+                                                    {{ reciboEditar.cheque | currency : "ARS" : "symbol" }}
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="column-fix-width">
+                                                <h6 class="text-muted">
+                                                    Depositos:
+                                                    {{ reciboEditar.deposito | currency : "ARS" : "symbol" }}
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Detalle Cheques -->
+                                <h4 class="card-title overflow-hidden mt-4" *ngIf="reciboEditar.cheques">
+                                    Detalle de Cheques
+                                </h4>
+                                <div class="table-responsive" *ngIf="reciboEditar.cheques">
+                                    <table class="table table-centered table-hover table-xl mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Banco</th>
+                                                <th>Monto</th>
+                                                <th>Fecha Cobro</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let cheque of reciboEditar.cheques">
+                                                <td>{{cheque.banco}}</td>
+                                                <td>{{cheque.importeCheque | currency : "ARS" : "symbol"}}</td>
+                                                <td>{{cheque.fechacobro | date : "dd/MM/yy"}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Detalle Depositos -->
+                                <h4 class="card-title overflow-hidden mt-4" *ngIf="reciboEditar.depositos">
+                                    Detalle de Depositos
+                                </h4>
+                                <div class="table-responsive" *ngIf="reciboEditar.depositos">
+                                    <table class="table table-centered table-hover table-xl mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Banco</th>
+                                                <th>Monto</th>
+                                                <th>Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let deposito of reciboEditar.depositos">
+                                                <td>{{deposito.banco}}</td>
+                                                <td>{{deposito.importeBanco | currency : "ARS" : "symbol"}}</td>
+                                                <td>{{deposito.fecha | date : "dd/MM/yy"}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

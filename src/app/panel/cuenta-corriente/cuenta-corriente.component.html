@@ -1,0 +1,135 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid mt-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Cuentas Corrientes</h4>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
+                <h6 class="m-0 font-weight-bold text-white">Cuentas Corrientes</h6>
+              </div>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-md-2">
+                    <label>Mes</label>
+                    <input type="number" class="form-control" [(ngModel)]="mes" min="1" max="12">
+                  </div>
+                  <div class="col-md-2">
+                    <label>Año</label>
+                    <input type="number" class="form-control" [(ngModel)]="ano">
+                  </div>
+                  <div class="col-md-8 d-flex align-items-end">
+                    <button class="btn btn-info mr-2" (click)="cargarDatos()">
+                      <i class="fas fa-search"></i> Cargar Histórico
+                    </button>
+                    <button class="btn btn-success" (click)="guardarDatos()" [disabled]="vendedores.length === 0">
+                      <i class="fas fa-save"></i> Guardar en Base de Datos
+                    </button>
+                  </div>
+                </div>
+
+                <div class="row mb-4">
+                  <div class="col-12">
+                    <label>Pegar XML de Cuentas Corrientes</label>
+                    <textarea class="form-control" rows="5" [(ngModel)]="xmlobj" placeholder="Pegue aquí el XML..."></textarea>
+                  </div>
+                  <div class="col-12 mt-2 text-right">
+                    <button class="btn btn-primary" (click)="procesarXML()">
+                      <i class="fas fa-cogs"></i> Procesar XML
+                    </button>
+                  </div>
+                </div>
+
+                <hr *ngIf="vendedores.length > 0">
+
+                <!-- Totales Generales -->
+                <div class="row mb-4" *ngIf="vendedores.length > 0">
+                  <div class="col-12">
+                    <h5 class="text-primary font-weight-bold">Totales Generales</h5>
+                    <table class="table table-bordered table-sm">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th>Hasta 45 Días</th>
+                          <th>Hasta 60 Días</th>
+                          <th>Más de 60 Días</th>
+                          <th>Total General</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="font-weight-bold text-right">
+                          <td class="text-success">{{totalesGenerales.hasta45 | currency}}</td>
+                          <td class="text-warning">{{totalesGenerales.hasta60 | currency}}</td>
+                          <td class="text-danger">{{totalesGenerales.mas60 | currency}}</td>
+                          <td>{{totalesGenerales.total | currency}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Tablas por Vendedor -->
+                <div class="row" *ngIf="vendedores.length > 0">
+                  <div class="col-12" *ngFor="let v of vendedores">
+                    <div class="card mb-4 border-left-primary">
+                      <div class="card-header bg-light">
+                        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-user-tie"></i> Vendedor: {{v.vendedor}}</h6>
+                      </div>
+                      <div class="card-body p-0">
+                        <div class="table-responsive">
+                          <table class="table table-striped table-hover table-sm mb-0">
+                            <thead class="thead-light">
+                              <tr>
+                                <th>Cod</th>
+                                <th>Razón Social</th>
+                                <th>Teléfono</th>
+                                <th class="text-right">Hasta 45 Días</th>
+                                <th class="text-right">Hasta 60 Días</th>
+                                <th class="text-right">Más de 60 Días</th>
+                                <th class="text-right">Saldo</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of v.clientes">
+                                <td>{{c.codigo}}</td>
+                                <td>{{c.razonSocial}}</td>
+                                <td>{{c.telefono}}</td>
+                                <td class="text-right">{{c.hasta45 | currency}}</td>
+                                <td class="text-right">{{c.hasta60 | currency}}</td>
+                                <td class="text-right">{{c.mas60 | currency}}</td>
+                                <td class="text-right font-weight-bold">{{c.saldo | currency}}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="table-primary font-weight-bold">
+                                <td colspan="3" class="text-right">Totales Vendedor:</td>
+                                <td class="text-right">{{v.totalHasta45 | currency}}</td>
+                                <td class="text-right">{{v.totalHasta60 | currency}}</td>
+                                <td class="text-right">{{v.totalMas60 | currency}}</td>
+                                <td class="text-right">{{v.totalGeneral | currency}}</td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

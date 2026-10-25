@@ -1,0 +1,255 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+              <h4 class="mb-0 font-size-18">Panel de Rentabilidad</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Cargar XML de Costos y Totales
+                </h4>
+                <div class="row">
+                  <div class="col-md-2 form-group">
+                    <label for="mes">Mes</label>
+                    <select class="form-control" id="mes" [(ngModel)]="mes" name="mes" [disabled]="tablaEmpresa.length > 0">
+                      <option value=1>ENE</option>
+                      <option value=2>FEB</option>
+                      <option value=3>MAR</option>
+                      <option value=4>ABR</option>
+                      <option value=5>MAY</option>
+                      <option value=6>JUN</option>
+                      <option value=7>JUL</option>
+                      <option value=8>AGO</option>
+                      <option value=9>SEP</option>
+                      <option value=10>OCT</option>
+                      <option value=11>NOV</option>
+                      <option value=12>DIC</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label for="ano">Año</label>
+                    <select class="form-control" id="ano" [(ngModel)]="ano" name="ano" [disabled]="tablaEmpresa.length > 0">
+                      <option value=2025>2025</option>
+                      <option value=2026>2026</option>
+                      <option value=2027>2027</option>
+                      <option value=2028>2028</option>
+                      <option value=2029>2029</option>
+                      <option value=2030>2030</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group d-flex align-items-end">
+                    <button class="btn btn-info w-100" type="button" (click)="cargarDatos()">
+                      Cargar Datos
+                    </button>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isDigital">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="xmlobj">XML Datos de Venta</label>
+                            <textarea class="form-control" id="xmlobj" name="xmlobj" [(ngModel)]="xmlobj" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary mr-2" type="button" (click)="procesarXML()">
+                        Procesar XML
+                      </button>
+                      <button class="btn btn-success mr-2" *ngIf="tablaEmpresa.length > 0" type="button" (click)="guardarDatos()">
+                        Guardar Rentabilidad y Descuentos
+                      </button>
+                      <button class="btn btn-warning" *ngIf="tablaEmpresa.length > 0" type="button" (click)="descuentosHabilitados = !descuentosHabilitados">
+                        {{ descuentosHabilitados ? 'Bloquear Descuentos' : 'Editar Descuentos' }}
+                      </button>
+                    </div>
+                </div>
+
+                <div class="row mt-3" *ngIf="tablaEmpresa.length > 0">
+                  <div class="col-md-4 form-group">
+                    <label for="vendedorSelect">Seleccionar Rentabilidad a Mostrar</label>
+                    <select class="form-control" id="vendedorSelect" [(ngModel)]="vendedorSeleccionado" name="vendedorSelect">
+                      <option *ngIf="!isDigital" value="MarketVet">Empresa (MarketVet)</option>
+                      <option *ngFor="let v of vendedoresDisponibles" [value]="v.vendedor">Vendedor: {{ v.vendedor }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Empresa -->
+                <div class="table-responsive mt-4" *ngIf="tablaEmpresa.length > 0 && vendedorSeleccionado === 'MarketVet'">
+                  <h4 class="card-title overflow-hidden mt-4 bg-light p-2 border">RENTABILIDAD EMPRESA</h4>
+                  <table class="table table-centered table-hover mb-0">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Empresa</th>
+                        <th>Proveedor</th>
+                        <th>Modelo</th>
+                        <th>Medida</th>
+                        <th class="text-right">Dto. Financiero (%)</th>
+                        <th class="text-right">Dto. Transfer (%)</th>
+                        <th class="text-right">Dto. Trimestral (%)</th>
+                        <th class="text-right">Dto. Distribuidor (%)</th>
+                        <th class="text-right">Costo Final</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Rentabilidad</th>
+                        <th class="text-right">Rentabilidad %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of tablaEmpresa">
+                        <td>MarketVet</td>
+                        <td>{{ item.proveedor }}</td>
+                        <td>{{ item.modelo }}</td>
+                        <td>{{ item.medida }}</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-right" [(ngModel)]="item.dtoFinanciero" (ngModelChange)="recalcular()" style="width: 80px;" [disabled]="!descuentosHabilitados" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-right" [(ngModel)]="item.dtoTransfer" (ngModelChange)="recalcular()" style="width: 80px;" [disabled]="!descuentosHabilitados" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-right" [(ngModel)]="item.dtoTrimestral" (ngModelChange)="recalcular()" style="width: 80px;" [disabled]="!descuentosHabilitados" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-right" [(ngModel)]="item.dtoDistribuidor" (ngModelChange)="recalcular()" style="width: 80px;" [disabled]="!descuentosHabilitados" />
+                        </td>
+                        <td class="text-right">{{ item.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ item.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ item.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ item.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                      </tr>
+                    </tbody>
+                    <tfoot class="thead-light font-weight-bold">
+                      <tr>
+                        <td colspan="8" class="text-right">TOTALES EMPRESA</td>
+                        <td class="text-right">{{ totalesEmpresa.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ totalesEmpresa.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ totalesEmpresa.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                        <td class="text-right">{{ totalesEmpresa.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
+                  <h4 class="card-title overflow-hidden mt-5 bg-light p-2 border">TOTALES POR VENDEDOR</h4>
+                  <table class="table table-centered table-hover mb-0 mt-3">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Vendedor</th>
+                        <th class="text-right">Costo Final</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Rentabilidad</th>
+                        <th class="text-right">Rentabilidad %</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let canal of canales">
+                      <!-- Renderizar tbody sólo si el canal tiene vendedores, para no mostrar canales vacíos -->
+                      <ng-container *ngIf="canal.vendedores.length > 0">
+                        <tr class="table-active font-weight-bold">
+                          <td colspan="5">{{ canal.nombre }}</td>
+                        </tr>
+                        <tr *ngFor="let v of canal.vendedores">
+                          <td class="pl-4">{{ v.vendedor }}</td>
+                          <td class="text-right">{{ v.totales.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ v.totales.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ v.totales.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ v.totales.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                        </tr>
+                        <tr class="font-weight-bold bg-light">
+                          <td class="text-right">TOTAL {{ canal.nombre }}</td>
+                          <td class="text-right">{{ canal.totales.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ canal.totales.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ canal.totales.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ canal.totales.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Vendedores -->
+                <div *ngFor="let vendedorData of tablasVendedores">
+                  <div class="table-responsive mt-4" *ngIf="vendedorSeleccionado === vendedorData.vendedor">
+                    <h4 class="card-title overflow-hidden mt-4 bg-light p-2 border">VENDEDOR: {{ vendedorData.vendedor }}</h4>
+                    <table class="table table-centered table-hover mb-0">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Vendedor</th>
+                          <th>Proveedor</th>
+                          <th>Modelo</th>
+                          <th>Medida</th>
+                          <th class="text-right">Financiero</th>
+                          <th class="text-right">Transfer</th>
+                          <th class="text-right">Trimestral</th>
+                          <th class="text-right">Distribuidor</th>
+                          <th class="text-right">Costo Final</th>
+                          <th class="text-right">Total</th>
+                          <th class="text-right">Rentabilidad</th>
+                          <th class="text-right">Rentabilidad %</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of vendedorData.rows">
+                          <td>{{ vendedorData.vendedor }}</td>
+                          <td>{{ item.proveedor }}</td>
+                          <td>{{ item.modelo }}</td>
+                          <td>{{ item.medida }}</td>
+                          <td class="text-right text-muted">{{ item.dtoFinanciero || 0 }}%</td>
+                          <td class="text-right text-muted">{{ item.dtoTransfer || 0 }}%</td>
+                          <td class="text-right text-muted">{{ item.dtoTrimestral || 0 }}%</td>
+                          <td class="text-right text-muted">{{ item.dtoDistribuidor || 0 }}%</td>
+                          <td class="text-right">{{ item.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ item.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ item.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ item.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                        </tr>
+                      </tbody>
+                      <tfoot class="thead-light font-weight-bold">
+                        <ng-container *ngIf="canalDigital.includes(vendedorData.vendedor)">
+                          <tr>
+                            <td colspan="8" class="text-right">RENTABILIDAD TRADICIONAL</td>
+                            <td class="text-right">{{ vendedorData.totalesTradicional?.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesTradicional?.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesTradicional?.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesTradicional?.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                          </tr>
+                          <tr>
+                            <td colspan="8" class="text-right">RENTABILIDAD DISTRIBUIDOR</td>
+                            <td class="text-right">{{ vendedorData.totalesDistribuidor?.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesDistribuidor?.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesDistribuidor?.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                            <td class="text-right">{{ vendedorData.totalesDistribuidor?.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                          </tr>
+                        </ng-container>
+                        <tr>
+                          <td colspan="8" class="text-right">TOTALES VENDEDOR</td>
+                          <td class="text-right">{{ vendedorData.totales.costo | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ vendedorData.totales.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ vendedorData.totales.rentabilidad | currency:'ARS':'symbol':'1.2-2' }}</td>
+                          <td class="text-right">{{ vendedorData.totales.rentabilidadPorcentaje | number:'1.2-2' }} %</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+              </div> 
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <!-- <app-footer></app-footer> -->
+  </div>
+</div>

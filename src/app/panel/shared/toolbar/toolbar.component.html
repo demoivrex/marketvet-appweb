@@ -1,0 +1,69 @@
+<div class="topnav">
+    <div class="container-fluid">
+        <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
+
+            <div class="collapse navbar-collapse" id="topnav-menu-content">
+                <ul class="navbar-nav">
+                    <li class="nav-item" *ngIf="canAccess('inicio')">
+                        <a class="nav-link" routerLink="/inicio">
+                            Revision de Recibos
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="canAccess('aprobacion-recibos')">
+                        <a class="nav-link" routerLink="/aprobacion-recibos">
+                            Aprobación de Recibos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <a class="dropdown-item" routerLink="/recibos-archivados" *ngIf="canAccess('recibos-archivados')">Reccibos Archivados</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="canAccess('empleados')">
+                        <a class="nav-link" routerLink="/empleados">
+                            Empleados
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <a class="dropdown-item" routerLink="/empleados-adicionales" *ngIf="canAccess('empleados-adicionales')">Adicionales por Empleados</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="canAccess('objetivos')">
+                        <a class="nav-link" routerLink="/objetivos">
+                            Objetivos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <a class="dropdown-item" routerLink="/objetivos-vendedores" *ngIf="canAccess('objetivos-vendedores')">Objetivos por Vendedores</a>
+                            <a class="dropdown-item" routerLink="/objetivos-categoria" *ngIf="canAccess('objetivos-categoria')">Objetivos por Categorías</a>
+                            <a class="dropdown-item" routerLink="/objetivos-control" *ngIf="canAccess('objetivos-control')">Control de Objetivos Diario</a>
+                            <a class="dropdown-item" routerLink="/objetivos-graficos" *ngIf="canAccess('objetivos-graficos')">Gráficos de Objetivos
+                                2020/2021</a>
+                            <a class="dropdown-item" routerLink="/graficos" *ngIf="canAccess('graficos')">Gráficos</a>
+                            <a class="dropdown-item" routerLink="/ventas-digital" *ngIf="canAccess('ventas-digital')">Ventas Canal Digital</a>
+                        </div>
+                    </li>
+                    <li class="nav-item" *ngIf="canAccess('liquidacion-empleados')">
+                        <a class="nav-link" routerLink="/liquidacion-empleados">
+                            Liquidaciones
+                        </a>
+                    </li>
+                    <li class="nav-item" *ngIf="canAccess('rentabilidad')">
+                        <a class="nav-link" routerLink="/rentabilidad">
+                            Rentabilidad
+                        </a>
+                    </li>
+                    <li class="nav-item" *ngIf="canAccess('cuenta-corriente')">
+                        <a class="nav-link" routerLink="/cuenta-corriente">
+                            Cuenta Corriente
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="canAccess('vital-admin')">
+                        <a class="nav-link" routerLink="/vital-admin">
+                            Vital
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <a class="dropdown-item" routerLink="/vital" *ngIf="canAccess('vital')">Vital Resumen</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>

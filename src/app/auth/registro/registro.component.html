@@ -1,0 +1,78 @@
+<div class="primary-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center min-vh-100">
+                    <div class="w-100 d-block my-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-5">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="text-center mb-4 mt-3">
+                                            <span><img src="assets/images/logo-discomercial.png"></span>
+                                        </div>
+                                        <form class="p-2" #formulario="ngForm">
+                                            <div class="form-group">
+                                                <label class="text-warning" for="nombre">Nombre</label>
+                                                <input class="form-control" 
+                                                    type="nombre" 
+                                                    id="nombre" 
+                                                    name="nombre"
+                                                    [(ngModel)]="usuario.nombre"
+                                                    required 
+                                                    minlength ="2"
+                                                    placeholder="Nombre y Apellido">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="text-warning" for="email">Email</label>
+                                                <input class="form-control" 
+                                                    type="email" 
+                                                    id="email" 
+                                                    name="email"
+                                                    [(ngModel)]="usuario.email"
+                                                    required 
+                                                    email
+                                                    placeholder="nombre@empresa.com">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="text-warning" 
+                                                    for="password"> Password
+                                                </label>
+                                                <input class="form-control" 
+                                                    type="password" 
+                                                    required 
+                                                    minlength="6"
+                                                    id="password" 
+                                                    name="password"
+                                                    [(ngModel)]="usuario.password"
+                                                    placeholder="Ingresar contraseña">
+                                            </div>
+                                            <div class="mb-3 text-center">
+                                                <button 
+                                                    class="btn btn-warning btn-block" 
+                                                    type="submit"
+                                                    [disabled]=formulario.invalid> Registro
+                                                </button>
+                                                <button 
+                                                    class="btn btn-warning btn-block" 
+                                                    type="button" 
+                                                    routerLink="/login"> Ya estoy registrado
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- end card-body -->
+                                </div>
+                                <!-- end card -->
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <!-- end row -->
+                    </div> <!-- end .w-100 -->
+                </div> <!-- end .d-flex -->
+            </div> <!-- end col-->
+        </div> <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+

@@ -1,0 +1,976 @@
+<div id="layout-wrapper">
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <app-toolbar></app-toolbar>
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-0 font-size-18">
+                Panel de Control de Objetivos Diario
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-2 form-group">
+                <label for="mes">Mes</label>
+                <select
+                  class="form-control"
+                  id="mes"
+                  [(ngModel)]="mes"
+                  name="mes"
+                >
+                  <option value="02">ENE FEB MAR</option>
+                  <option value="05">ABR MAY JUN</option>
+                  <option value="08">JUL AGO SEP</option>
+                  <option value="11">OCT NOV DIC</option>
+                </select>
+              </div>
+              <div class="col-md-2 form-group">
+                <label for="ano">Año</label>
+                <select
+                  class="form-control"
+                  id="ano"
+                  [(ngModel)]="ano"
+                  name="ano"
+                >
+                  <option *ngFor="let anio of listaAnios" [value]="anio">{{anio}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <button
+                  class="btn btn-success mb-4"
+                  (click)="cargarObjetivos()"
+                >
+                  CARGAR OBJETIVOS
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Primer Mes Tradicional
+                </h4>
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes1; of: primerMesTrad">
+                        <td class="text-truncate">
+                          {{ mes1.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.ventasp)"
+                        >
+                          <b>{{ mes1.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.cantp)"
+                        >
+                          <b>{{ mes1.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.kgp)"
+                        >
+                          <b>{{ mes1.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.coeficiente)"
+                        >
+                          <b>{{ mes1.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes1Trad && promediosMes1Trad[0]">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Trad[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Trad[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Trad[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Trad[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Trad[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes1Trad[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Trad[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Trad[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Primer Mes Distribuidores
+                </h4>
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes1; of: primerMesDist">
+                        <td class="text-truncate">
+                          {{ mes1.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.ventasp)"
+                        >
+                          <b>{{ mes1.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.cantp)"
+                        >
+                          <b>{{ mes1.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.kgp)"
+                        >
+                          <b>{{ mes1.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.coeficiente)"
+                        >
+                          <b>{{ mes1.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes1Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dist[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dist[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dist[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dist[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dist[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes1Dist[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dist[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dist[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">Primer Mes Digital</h4>
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes1; of: primerMesDig">
+                        <td class="text-truncate">
+                          {{ mes1.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.ventasp)"
+                        >
+                          <b>{{ mes1.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.cantp)"
+                        >
+                          <b>{{ mes1.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.kgp)"
+                        >
+                          <b>{{ mes1.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes1.coeficiente)"
+                        >
+                          <b>{{ mes1.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes1Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dig[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dig[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dig[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dig[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dig[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes1Dig[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes1Dig[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes1Dig[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+
+        <div class="row">
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Segundo Mes Tradicional
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes2; of: segundoMesTrad">
+                        <td class="text-truncate">
+                          {{ mes2.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.ventasp)"
+                        >
+                          <b>{{ mes2.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.cantp)"
+                        >
+                          <b>{{ mes2.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.kgp)"
+                        >
+                          <b>{{ mes2.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.coeficiente)"
+                        >
+                          <b>{{ mes2.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes2Trad && promediosMes2Trad[0]">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Trad[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Trad[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Trad[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Trad[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Trad[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes2Trad[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Trad[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Trad[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Segundo Mes Distribuidores
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes2; of: segundoMesDist">
+                        <td class="text-truncate">
+                          {{ mes2.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.ventasp)"
+                        >
+                          <b>{{ mes2.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.cantp)"
+                        >
+                          <b>{{ mes2.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.kgp)"
+                        >
+                          <b>{{ mes2.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.coeficiente)"
+                        >
+                          <b>{{ mes2.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes2Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dist[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dist[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dist[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dist[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dist[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes2Dist[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dist[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dist[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Segundo Mes Digital
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes2; of: segundoMesDig">
+                        <td class="text-truncate">
+                          {{ mes2.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.ventasp)"
+                        >
+                          <b>{{ mes2.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.cantp)"
+                        >
+                          <b>{{ mes2.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.kgp)"
+                        >
+                          <b>{{ mes2.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes2.coeficiente)"
+                        >
+                          <b>{{ mes2.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes2Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dig[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dig[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dig[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dig[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dig[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes2Dig[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes2Dig[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes2Dig[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+
+        <div class="row">
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Tercer Mes Tradicional
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes3; of: tercerMesTrad">
+                        <td class="text-truncate">
+                          {{ mes3.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.ventasp)"
+                        >
+                          <b>{{ mes3.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.cantp)"
+                        >
+                          <b>{{ mes3.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.kgp)"
+                        >
+                          <b>{{ mes3.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.coeficiente)"
+                        >
+                          <b>{{ mes3.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes3Trad && promediosMes3Trad[0]">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Trad[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Trad[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Trad[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Trad[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Trad[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes3Trad[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Trad[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Trad[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Tercer Mes Distribuidores
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes3; of: tercerMesDist">
+                        <td class="text-truncate">
+                          {{ mes3.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.ventasp)"
+                        >
+                          <b>{{ mes3.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.cantp)"
+                        >
+                          <b>{{ mes3.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.kgp)"
+                        >
+                          <b>{{ mes3.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.coeficiente)"
+                        >
+                          <b>{{ mes3.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes3Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dist[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dist[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dist[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dist[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dist[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes3Dist[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dist[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dist[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+
+          <div class="col-xl-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title overflow-hidden">
+                  Tercer Mes Digital
+                </h4>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-centered table-hover table-xl mb-0"
+                    id="recent-orders"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="border-top-0">Vendedor</th>
+                        <th class="border-top-0 alineado-der">$</th>
+                        <th class="border-top-0 alineado-der">Un</th>
+                        <th class="border-top-0 alineado-der">Kg</th>
+                        <th class="border-top-0 alineado-der">Coef</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let mes3; of: tercerMesDig">
+                        <td class="text-truncate">
+                          {{ mes3.vendedor }}
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.ventasp)"
+                        >
+                          <b>{{ mes3.ventasp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.cantp)"
+                        >
+                          <b>{{ mes3.cantp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.kgp)"
+                        >
+                          <b>{{ mes3.kgp | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="asignarRangoSemaforo(mes3.coeficiente)"
+                        >
+                          <b>{{ mes3.coeficiente | percent : "1.0" }}</b>
+                        </td>
+                      </tr>
+                      <tr *ngIf="promediosMes3Trad">
+                        <td class="text-truncate">PROMEDIO</td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dig[0].ventas)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dig[0].ventas | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dig[0].cant)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dig[0].cant | percent : "1.0"
+                          }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dig[0].kg)
+                          "
+                        >
+                          <b>{{ promediosMes3Dig[0].kg | percent : "1.0" }}</b>
+                        </td>
+                        <td
+                          class="text-truncate alineado-der"
+                          [ngClass]="
+                            asignarRangoSemaforo(promediosMes3Dig[0].coef)
+                          "
+                        >
+                          <b>{{
+                            promediosMes3Dig[0].coef | percent : "1.0"
+                          }}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- end card-body-->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col -->
+        </div>
+      </div>
+      <!-- container-fluid -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
